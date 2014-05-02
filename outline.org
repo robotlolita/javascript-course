@@ -1,0 +1,15 @@
+
+* Course Outline
+** Introduction
+*** An overview of computational models
+*** Why functional programming matters
+*** A quick overview of JavaScript--'s syntax
+** Arithmetic Expressions
+** Boolean Logic
+** Lambda Calculus
+** Recursive data types
+** Generalised recursion
+** Non-blocking concurrency and CPS
+** Category Theory
+** Prototypical OO
+** Optimisations
