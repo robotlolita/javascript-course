@@ -4,8 +4,8 @@
 *** An overview of computational models
 *** Why functional programming matters
 *** A quick overview of JavaScript--'s syntax
-** Arithmetic Expressions
 ** Boolean Logic
+** Arithmetic Expressions
 ** Lambda Calculus
 ** Recursive data types
 ** Generalised recursion
