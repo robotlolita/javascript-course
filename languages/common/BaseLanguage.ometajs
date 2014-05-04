@@ -1,0 +1,52 @@
+
+/**
+ * A list of reserved names in the language.
+ *
+ * @summary [String]
+ */
+var reserved = [ 'function'
+               , 'true'
+               , 'false'
+               , 'let'
+               ]
+
+/**
+ * True if some name is reserved by the language.
+ *
+ * @summary String → Boolean
+ */
+function isReserved(a) {
+  return reserved.indexOf(a) !== -1
+}
+
+ometa BaseLanguage {
+  space   = ^space | comment,
+  ws      = space*,
+  spaces  = ws,
+  eol     = '\n' | '\r',
+  comment = "//" (~eol char)*:a eol -> a.join(''),
+  eof     = ?(this._offset >= this._source.length),
+
+  // Identifiers
+  idStart    = letter,
+  idRest     = letter | digit | '_',
+  identifier = ws <idStart idRest*>:a ?(!isReserved(a)) -> [#Id, a],
+
+  letterOrDigit = letter | digit,
+  keyword :xs   = token(xs) ~letterOrDigit  -> xs,
+
+  // Values
+  digits = digit+:as -> Number(as.join('')),
+  number = digits:a ('.' digits:b)? -> [#Number, Number(a + '.' + (b || 0))],
+
+  stringEscape = token('\\"'),
+  stringChar   = (stringEscape | (~seq('"') char)):a -> a,
+  string       = '"' <stringChar*>:as '"'            -> [#String, as],
+
+  vector = '[' ws expr:hd (ws ',' ws expr)*:tl ws ']' -> [#Vector, [hd].concat(tl)],
+         | '[' ws expr:hd ws ']'                      -> [#Vector, [hd]],
+         | '[' ws ']'                                 -> [#Vector, []],
+
+  // Binding constructs & stuff
+  letConstruct = keyword('let') ws identifier:a ws '=' ws expr:b -> [#Let, a, b],
+}

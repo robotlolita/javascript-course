@@ -1,4 +1,11 @@
-{ "name": "js--"
-, "description": "A multi-layered minimal implementation of a JS dialect for teaching."
-, "version": "0.0.0"
+{
+  "name": "js--",
+  "description": "A multi-layered minimal implementation of a JS dialect for teaching.",
+  "version": "0.0.0",
+  "dependencies": {
+    "ometajs": "^3.3.6",
+    "xtend": "^3.0.0",
+    "core.lambda": "^1.0.0",
+    "escodegen": "^1.3.2"
+  }
 }

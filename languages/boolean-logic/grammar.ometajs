@@ -1,0 +1,31 @@
+var BaseLanguage = require('../common/BaseLanguage').BaseLanguage
+var _ = require('../common/gen')
+
+ometa BooleanGrammar <: BaseLanguage {
+  value = keyword('true')     -> [#Lit, true]
+        | keyword('false')    -> [#Lit, false],
+
+  expr = expr:a ws "?" ws expr:b ws ":" ws expr:c -> [#If, a, b, c]
+       | expr:a ws "&&" ws expr:b                 -> [#And, a, b]
+       | expr:a ws "||" ws expr:b                 -> [#Or, a, b]
+       | "!" ws expr:a                            -> [#Not, a]
+       | identifier
+       | value,
+
+  statement = letConstruct,
+
+  program = (ws statement)*:xs ws eof -> [#Program, xs]
+}
+
+ometa BooleanCompiler {
+  Let     cc:id cc:val   -> _.var(id, val),
+  If      cc:a cc:b cc:c -> _.cond(a, b, c),
+  And     cc:a cc:b      -> _.and(a, b),
+  Or      cc:a cc:b      -> _.or(a, b),
+  Not     cc:a           -> _.not(a),
+  Lit     :a             -> _.lit(a),
+  Id      :a             -> _.id(a),
+  Program [cc*:xs]       -> _.program(xs),
+
+  cc = [:t apply(t):a]   -> a
+}
