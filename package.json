@@ -2,6 +2,21 @@
   "name": "js--",
   "description": "A multi-layered minimal implementation of a JS dialect for teaching.",
   "version": "0.0.0",
+  "main": "./lib/core.js",
+  "author": "Quildreen Motta",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/robotlolita/javascript-course.git"
+  },
+  "bugs": {
+    "url": "https://github.com/robotlolita/javascript-course"
+  },
+  "bin": {
+    "jsm": "./bin/jsm"
+  },
+  "license": [
+    { "type": "MIT" }
+  ],
   "dependencies": {
     "ometajs": "^3.3.6",
     "xtend": "^3.0.0",

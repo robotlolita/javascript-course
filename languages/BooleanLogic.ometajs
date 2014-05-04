@@ -1,5 +1,5 @@
-var BaseLanguage = require('../common/BaseLanguage').BaseLanguage
-var _            = require('../common/gen')
+var BaseLanguage = require('./common/BaseLanguage').BaseLanguage
+var _            = require('../lib/gen')
 
 exports.name  = 'Boolean Logic'
 exports.state = function() {
