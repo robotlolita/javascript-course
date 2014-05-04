@@ -20,11 +20,10 @@ function isReserved(a) {
 }
 
 ometa BaseLanguage {
-  space   = ^space | comment,
+  space   = ^space | fromTo('//', '\n'),
   ws      = space*,
   spaces  = ws,
   eol     = '\n' | '\r',
-  comment = "//" (~eol char)*:a eol -> a.join(''),
   eof     = ?(this._offset >= this._source.length),
 
   // Identifiers
@@ -34,6 +33,8 @@ ometa BaseLanguage {
 
   letterOrDigit = letter | digit,
   keyword :xs   = token(xs) ~letterOrDigit  -> xs,
+
+  bottom = "???" -> [#Bottom],
 
   // Values
   digits = digit+:as -> Number(as.join('')),

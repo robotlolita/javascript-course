@@ -8,7 +8,8 @@ exports.state = function() {
 
 ometa Parser <: BaseLanguage {
   value = keyword('true')     -> [#Lit, true]
-        | keyword('false')    -> [#Lit, false],
+        | keyword('false')    -> [#Lit, false]
+        | bottom,
 
   expr = expr:a ws "?" ws expr:b ws ":" ws expr:c -> [#If, a, b, c]
        | expr:a ws "&&" ws expr:b                 -> [#And, a, b]
@@ -31,6 +32,8 @@ ometa Compiler {
   Lit     :a             -> _.lit(a),
   Id      :a             -> _.id(a),
   Program [cc*:xs]       -> _.program(xs),
+  Bottom                 -> _.raise(_.error( _.id('Error')
+                                           , 'Undefined expression.')),
 
   cc = [:t apply(t):a]   -> a
 }
