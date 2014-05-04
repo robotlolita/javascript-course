@@ -1,0 +1,81 @@
+// (1)
+// Tanto a operação de disjunção (||) quanto a operação de conjunção (&&)
+// obedecem à lei de idenpotência. Isto é, para determinados parâmetros,
+// o resultado da aplicação dessas operações é o mesmo que o argumento
+// dessas operações.
+//
+// Por exemplo, suponha que uma função qualquer “f(α)” seja idempotente
+// para algum valor α. Nesse caso, a aplicação da função neste valor
+// resultaria no mesmo valor. Isto é: “f(α) = α”.
+
+// Para quais valores a operação de disjunção (||) é idenpotente?
+let idempotence_disjunction = ??? || ???
+
+// Para quais valores a operação de conjunção (&&) é idenpotente?
+let idempotence_conjunction = ??? && ???
+
+
+// (2)
+// Tanto a operação de disjunção (||) quanto a operação de conjunção (&&)
+// possuem um valor de identidade, de forma que a aplicação dessas operações
+// a um argumento α e o valor de identidade sempre resultam em α.
+//
+// Por exemplo, para a operação de adição, o valor de identidade é 0
+// visto que para qualquer número adicionado à 0, o resultado é o próprio
+// número.
+
+// Qual o valor de identidade da operação de disjunção (||)?
+let identity_disjunction = ???
+
+let identity_disjunctionA = true  || identity_disjunction
+let identity_disjunctionB = false || identity_disjunction
+
+// Qual o valor de identidade da operação de conjunção (&&)?
+let identity_conjunction = ???
+
+let identity_conjunctionA = true  && identity_conjunction
+let identity_conjunctionB = false && identity_conjunction
+
+
+// (3)
+// Ambas operações apresentam a propriedade de “aniquilação,” de forma que
+// a aplicação dessas operações a um argumento α e o valor de “aniquilação,”
+// ignoram o argumento α.
+//
+// Por exemplo, multiplicação exibe essa propriedade, visto que qualquer
+// número multiplicado por 0 sempre resulta em 1.
+
+// Qual o valor de aniquilação para a operação de conjunção (&&)?
+let annihilator_conjunction = ???
+
+let annihilator_conjunctionA = true  && annihilator_conjunction
+let annihilator_conjunctionB = false && annihilator_conjunction
+
+// Qual o valor de aniquilação para a operação de disjunção (||)?
+let annihilator_disjunction = ???
+
+let annihilator_disjunctionA = true  || annihilator_disjunction
+let annihilator_disjunctionB = false || annihilator_disjunction
+
+
+// (4)
+// A operação de negação obedece as leis de complemento de teoria de
+// conjuntos, em combinação com as operações de disjunção e conjunção.
+// Diferente das leis vistas acima, a negação permite que o resultado
+// de uma expressão booleana mude de forma diferente do input (e.g.: para
+// um input falso, a negação pode retornar verdadeiro).
+//
+// Altere as expressões a seguir de forma que a lei descrita se aplique:
+
+// Para todo valor α a combinação (β && β), aonde β pode ser tanto α
+// quanto !α, a expressão sempre retorna falso:
+let complementation1 = true
+
+let complementation_false = complementation1 && complementation1
+
+
+// Para todo valor α a combinação (β || β), aonde β pode ser tanto α
+// quanto !α, a expressão sempre retorna verdadeiro:
+let complementation2 = false
+
+let complementation_true  = complementation2 || complementation2
