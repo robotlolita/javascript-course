@@ -1,0 +1,74 @@
+#!/usr/bin/env node
+var doc = [ 'jsm — A minimal multi-layered subset of JS for teaching.'
+          , ''
+          , 'Usage:'
+          , '  jsm repl --language=LANG'
+          , '  jsm [OPTIONS] --language=LANG <file>'
+          , '  jsm -h | --help'
+          , '  jsm -v | --version'
+          , ''
+          , 'Options:'
+          , '  -l, --language=FILE  Uses language definitions from FILE.'
+          , '  -c, --compile        Compiles the file.'
+          , '  -a, --ast            Displays a JSON of the AST of a program.'
+          , '  -o, --output=FILE    Outputs to FILE instead of stdout.'
+          , '  -j, --json           Outputs JS AST as JSON.'
+          , '  -h, --help           Displays this screen and exits.'
+          , '  -v, --version        Displays the version number and exits.'
+          ].join('\n')
+
+
+var fs     = require('fs')
+var docopt = require('docopt').docopt
+var path   = require('path')
+var pkg    = require('../../package.json')
+var core   = require('../common/core')
+var curry  = require('core.lambda').curry
+var ometa  = require('ometajs')
+
+var root   = path.resolve('.')
+
+function read(filename) {
+  return fs.readFileSync(filename, 'utf-8')
+}
+
+write = curry(write, 2)
+function write(filename, data) {
+  return fs.writeFileSync(filename, data, 'utf-8')
+}
+
+function die() {
+  process.exit(1)
+}
+
+function display(file) {
+  return file?            write(file)
+  :      /* otherwise */  console.log.bind(console)
+}
+
+function toJSON(data) {
+  return JSON.stringify(data, null, 2)
+}
+
+function toAST(language, source) {
+  return core.compile(language.Compiler, core.parse(language.Parser, source))
+}
+
+function compile(language, source) {
+  return core.generate(toAST(language, source))
+}
+
+void function main() {
+  var args     = docopt(doc, { version: pkg.version })
+  var file     = args['<file>']
+  var language = require(path.join(root, args['--language']))
+  var show     = display(args['--output'])
+  var repl     = args['repl']
+  var source   = file? read(file) : ''
+
+  ; repl?               core.repl(language, language.state())
+  : args['--compile']?  show(compile(language, source))
+  : args['--ast']?      show(toJSON(core.parse(language, source)))
+  : args['--json']?     show(toJSON(toAST(language, source)))
+  :                     die(show(doc))
+}()

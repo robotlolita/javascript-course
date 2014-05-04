@@ -1,7 +1,12 @@
 var BaseLanguage = require('../common/BaseLanguage').BaseLanguage
-var _ = require('../common/gen')
+var _            = require('../common/gen')
 
-ometa BooleanGrammar <: BaseLanguage {
+exports.name  = 'Boolean Logic'
+exports.state = function() {
+  return {}
+}
+
+ometa Parser <: BaseLanguage {
   value = keyword('true')     -> [#Lit, true]
         | keyword('false')    -> [#Lit, false],
 
@@ -17,7 +22,7 @@ ometa BooleanGrammar <: BaseLanguage {
   program = (ws statement)*:xs ws eof -> [#Program, xs]
 }
 
-ometa BooleanCompiler {
+ometa Compiler {
   Let     cc:id cc:val   -> _.var(id, val),
   If      cc:a cc:b cc:c -> _.cond(a, b, c),
   And     cc:a cc:b      -> _.and(a, b),
