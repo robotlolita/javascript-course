@@ -15,7 +15,9 @@
     "jsm": "./bin/jsm"
   },
   "license": [
-    { "type": "MIT" }
+    {
+      "type": "MIT"
+    }
   ],
   "dependencies": {
     "ometajs": "^3.3.6",
@@ -23,5 +25,12 @@
     "core.lambda": "^1.0.0",
     "escodegen": "^1.3.2",
     "docopt": "^0.4.0"
+  },
+  "devDependencies": {
+    "hifive-tap": "^0.1.1",
+    "hifive": "^0.1.0",
+    "alright": "^1.0.0-alpha2",
+    "faucet": "0.0.1",
+    "sweet.js": "^0.5.0"
   }
 }
