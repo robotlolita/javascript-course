@@ -3,7 +3,7 @@ var doc = [ 'jsm — A minimal multi-layered subset of JS for teaching.'
           , ''
           , 'Usage:'
           , '  jsm repl --language=LANG'
-          , '  jsm [OPTIONS] --language=LANG <file>'
+          , '  jsm --language=LANG [options] <file>'
           , '  jsm -h | --help'
           , '  jsm -v | --version'
           , ''
@@ -68,7 +68,7 @@ void function main() {
 
   ; repl?               core.repl(language, language.state())
   : args['--compile']?  show(compile(language, source))
-  : args['--ast']?      show(toJSON(core.parse(language, source)))
+  : args['--ast']?      show(toJSON(core.parse(language.Parser, source)))
   : args['--json']?     show(toJSON(toAST(language, source)))
   :                     die(show(doc))
 }()
