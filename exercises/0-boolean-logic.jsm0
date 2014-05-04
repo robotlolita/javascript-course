@@ -79,3 +79,10 @@ let complementation_false = complementation1 && complementation1
 let complementation2 = false
 
 let complementation_true  = complementation2 || complementation2
+
+
+// (5)
+// Mostre como é possível expressar a operação de negação (!) através
+// do operador condicional (?:)
+let negation1 = true  ? ??? : ???
+let negation2 = false ? ??? : ???
