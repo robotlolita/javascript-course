@@ -42,7 +42,7 @@ function isReserved(a) {
 ometa BaseLanguage {
   space   = ^space | fromTo('//', '\n'),
   ws      = space*,
-  spaces  = ws,
+  spaces  = space*,
   eol     = '\n' | '\r',
   eof     = ?(this._offset >= this._source.length),
 
@@ -52,7 +52,7 @@ ometa BaseLanguage {
   identifier = ws <idStart idRest*>:a ?(!isReserved(a)) -> [#Id, a],
 
   letterOrDigit = letter | digit,
-  keyword :xs   = token(xs) ~letterOrDigit  -> xs,
+  keyword :xs   = seq(xs) ~letterOrDigit  -> xs,
 
   bottom = "???" -> [#Bottom],
 
