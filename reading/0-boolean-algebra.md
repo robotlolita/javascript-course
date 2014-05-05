@@ -12,7 +12,7 @@ Nesse modelo computacional uma álgebra é formada pelos valores *Verdadeiro* e
 As regras para essa linguagem podem ser definidas da seguinte forma:
 
 ```hs
-<identifier> ::= <letter> (<letter> | <digit>)+
+<identifier> ::= <letter> (<letter> | <digit> | _)+
 <value>      ::= true | false
 <expr>       ::= ( <expr> )                     -- Agrupamento
                | <expr> ? <expr> : <expr>       -- Condicional
