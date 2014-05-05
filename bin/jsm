@@ -51,6 +51,7 @@ var exercises = require('../lib/exercises')
 
 var keys = Object.keys
 var show = console.log.bind(console)
+var die  = process.exit.bind(process)
 
 var root   = path.resolve('.')
 
@@ -67,13 +68,9 @@ function stripComments(doc) {
   return doc.replace(/\#.+/g, '')
 }
 
-function die() {
-  process.exit(1)
-}
-
 function display(file) {
   return file?            write(file)
-  :      /* otherwise */  console.log.bind(console)
+  :      /* otherwise */  show
 }
 
 function toJSON(data) {
@@ -99,7 +96,7 @@ function parseArgs(spec, options) {
     return docopt(spec, options)
   } catch(e) {
     show(doc)
-    _oldExit.call(process, 1)
+    die()
   } finally {
     process.exit = _oldExit
     console.log  = _oldLog
@@ -115,7 +112,7 @@ void function main() {
 
   ; args.repl?            core.repl(language, language.state())
   : args.languages?       show(listLanguages())
-  : args.exercise?        exercises.run(args['<file>'])
+  : args.exercise?        exercises.run(args['<file>']).otherwise(die)
   : args.help?            show(doc)
   : args.version?         show('jsm version ' + pkg.version)
   : args['--compile']?    output(source.code())

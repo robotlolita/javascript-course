@@ -25,29 +25,29 @@ var alright = require('alright')
 module.exports = spec('Boolean Logic', function(it, spec) {
 
   it('(1) Identidade', function() {
-    identity_disjunctionA => true
-    identity_disjunctionB => false
+    identity_disjunctionA() => true
+    identity_disjunctionB() => false
 
-    identity_conjunctionA => true
-    identity_conjunctionB => false
+    identity_conjunctionA() => true
+    identity_conjunctionB() => false
   })
 
   it('(2) Aniquilação', function() {
-    annihilator_conjunctionA => true
-    annihilator_conjunctionB => true
+    annihilator_conjunctionA() => true
+    annihilator_conjunctionB() => true
 
-    annihilator_disjunctionA => false
-    annihilator_disjunctionB => false
+    annihilator_disjunctionA() => false
+    annihilator_disjunctionB() => false
   })
 
   it('(3) Complementação', function() {
-    complementation_false => false
-    complementation_true  => true
+    complementation_false() => false
+    complementation_true()  => true
   })
 
   it('(4) Derivando negação do operador condicional', function() {
-    negation1 => false
-    negation2 => true
+    negation1() => false
+    negation2() => true
   })
   
 })
