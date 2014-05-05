@@ -28,9 +28,20 @@ var T      = claire.data
 
 module.exports = spec('Boolean Logic', function(it, spec) {
 
-  spec('(1) Identidade', function(it) {
-    it('Disjunção', forAll(T.Bool).satisfy(identity_disjunction).asTest())
-    it('Conjunção', forAll(T.Bool).satisfy(identity_conjunction).asTest())
+  spec('(1) Propriedades das definições dos operadores lógicos', function(it) {
+    it(': Conjunção', forAll(T.Bool, T.Bool).satisfy(conjunction).asTest())
+    it(': Disjunção', forAll(T.Bool, T.Bool).satisfy(disjunction).asTest())
+    it(': Negação',   forAll(T.Bool).satisfy(negation).asTest())
+  })
+
+  spec('(2) Lei de Identidade', function(it) {
+    it(': Conjunção', forAll(T.Bool).satisfy(conjunction_identity).asTest())
+    it(': Disjunção', forAll(T.Bool).satisfy(disjunction_identity).asTest())
+  })
+
+  spec('(3) Lei de Aniquilação', function(it) {
+    it(': Conjunção', forAll(T.Bool).satisfy(conjunction_annihilation).asTest())
+    it(': Disjunção', forAll(T.Bool).satisfy(disjunction_annihilation).asTest())
   })
 
 })

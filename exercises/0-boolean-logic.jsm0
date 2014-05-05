@@ -1,35 +1,63 @@
-// (1)
-// Tanto a operação de disjunção (||) quanto a operação de conjunção (&&)
-// possuem um valor de identidade, de forma que a aplicação dessas operações
-// a um argumento α e o valor de identidade sempre resultam em α.
+// (1) Propriedades das definições dos operadores lógicos
+// =====================================================================
 //
-// Por exemplo, para a operação de adição, o valor de identidade é 0
-// visto que para qualquer número adicionado à 0, o resultado é o próprio
-// número.
-
-law identity_disjunction(x): ???
-law identity_conjunction(x): ???
-
-
-// (2)
-// Ambas operações apresentam a propriedade de “aniquilação,” de forma que
-// a aplicação dessas operações a um argumento α e o valor de “aniquilação,”
-// ignoram o argumento α.
+// A operação de conjunção pode ser definida da seguinte forma:
 //
-// Por exemplo, multiplicação exibe essa propriedade, visto que qualquer
-// número multiplicado por 0 sempre resulta em 1.
-
-
-// (3)
-// A operação de negação obedece as leis de complemento de teoria de
-// conjuntos, em combinação com as operações de disjunção e conjunção.
-// Diferente das leis vistas acima, a negação permite que o resultado
-// de uma expressão booleana mude de forma diferente do input (e.g.: para
-// um input falso, a negação pode retornar verdadeiro).
+//      true ∧ true = true
+//      x    ∧ y    = false
 //
-// Altere as expressões a seguir de forma que a lei descrita se aplique:
+// A seguinte regra captura essa propriedade:
+law conjunction(x, y): x && y === x? y? true
+                                      : false
+                                   : false
 
-// (4)
-// Mostre como é possível expressar a operação de negação (!) através
-// do operador condicional (?:)
+// Dado que a disjunção pode ser definida como:
+//
+//     false ∨ false = false
+//     x     ∨ y     = true
+//
+// Descreva a regra que capture essa propriedade da disjunção:
+law disjunction(x, y): ???
 
+// Dado que a negação pode ser definida como:
+//
+//     ¬true  = false
+//     ¬false = true
+//
+// Descreva a regra que capture essa propriedade da negação:
+law negation(x): ???
+
+
+// (2) Lei de Identidade
+// =====================================================================
+//
+// A conjunção e disjunção satisfazem a lei de identidade. Isto é, na
+// expressão `α ⊗ β`, para um valor β, se for possível substituir
+// qualquer valor em α obtendo o mesmo valor α como resultado da
+// operação, então β é considerado a “identidade” da operação.
+//
+// Se considerarmos a operação de adição, por exemplo, podemos ver que o
+// valor 0 é a identidade da operação, visto que para qualquer número α,
+// a operação `α + 0`  sempre retorna α.
+//
+// Mostre como a lei de identidade se aplica para as operações de
+// disjunção e conjunção.
+law conjunction_identity(x): ???
+law disjunction_identity(x): ???
+
+
+// (3) Lei de Aniquilação
+// =====================================================================
+//
+// A conjunção e disjunção satisfazem a lei de aniquição. Isto é, na
+// expressão `α ⊗ β`, para um valor β, independente do valor de α a
+// operação sempre resultará no mesmo resultado. Neste caso, β é chamado
+// de valor aniquilador.
+//
+// Por exemplo, em multiplicação, 0 é o valor aniquilador, visto que
+// qualquer número multiplicado por zero resulta no mesmo valor: 1.
+//
+// Mostre como a lei de aniquilação se aplica para as operações de
+// conjunção e disjunção.
+law conjunction_annihilation(x): ???
+law disjunction_annihilation(x): ???
