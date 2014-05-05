@@ -24,7 +24,7 @@ var doc = [ 'jsm — A minimal multi-layered subset of JS for teaching.'
           , ''
           , 'Usage:'
           , '  jsm repl --language=LANG'
-          , '  jsm --language=LANG [options] <file>'
+          , '  jsm [options] <file>'
           , '  jsm -h | --help'
           , '  jsm -v | --version'
           , ''
@@ -71,25 +71,17 @@ function toJSON(data) {
   return JSON.stringify(data, null, 2)
 }
 
-function toAST(language, source) {
-  return core.compile(language.Compiler, core.parse(language.Parser, source))
-}
-
-function compile(language, source) {
-  return core.generate(toAST(language, source))
-}
-
 void function main() {
   var args     = docopt(doc, { version: pkg.version })
   var file     = args['<file>']
-  var language = require(path.join(root, args['--language']))
+  var language = args['--language']? require(path.join(root, args['--language'])) : null
   var show     = display(args['--output'])
   var repl     = args['repl']
-  var source   = file? read(file) : ''
+  var source   = !repl? core.resolveFile(file) : null
 
   ; repl?               core.repl(language, language.state())
-  : args['--compile']?  show(compile(language, source))
-  : args['--ast']?      show(toJSON(core.parse(language.Parser, source)))
-  : args['--json']?     show(toJSON(toAST(language, source)))
+  : args['--compile']?  show(source.code)
+  : args['--ast']?      show(toJSON(source.ast))
+  : args['--json']?     show(toJSON(source.jsAst))
   :                     die(show(doc))
 }()
