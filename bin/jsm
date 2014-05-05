@@ -47,6 +47,7 @@ var ometa     = require('ometajs')
 var pkg       = require('../package.json')
 var core      = require('../lib/core')
 var languages = require('../lib/languages')
+var exercises = require('../lib/exercises')
 
 var keys = Object.keys
 var show = console.log.bind(console)
@@ -110,18 +111,15 @@ void function main() {
   var file     = args['<file>']
   var language = args['--language']? languages[args['--language']] : null
   var output   = display(args['--output'])
-  var repl     = args['repl']
-  var list     = args['languages']
-  var help     = args['help']
-  var version  = args['version']
   var source   = args['compile']? core.resolveFile(file) : null
 
-  ; repl?               core.repl(language, language.state())
-  : list?               show(listLanguages())
-  : help?               show(doc)
-  : version?            show('jsm version ' + pkg.version)
-  : args['--compile']?  output(source.code)
-  : args['--ast']?      output(toJSON(source.ast))
-  : args['--json']?     output(toJSON(source.jsAst))
-  :                     die(show(doc))
+  ; args.repl?            core.repl(language, language.state())
+  : args.languages?       show(listLanguages())
+  : args.exercise?        exercises.run(args['<file>'])
+  : args.help?            show(doc)
+  : args.version?         show('jsm version ' + pkg.version)
+  : args['--compile']?    output(source.code)
+  : args['--ast']?        output(toJSON(source.ast))
+  : args['--json']?       output(toJSON(source.jsAst))
+  :                       die(show(doc))
 }()

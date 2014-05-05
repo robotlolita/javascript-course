@@ -53,7 +53,7 @@ ometa Compiler {
   Id      :a             -> _.id(a),
   Program [cc*:xs]       -> _.program(xs),
   Bottom                 -> _.raise(_.error( _.id('Error')
-                                           , 'Undefined expression.')),
+                                           , 'Not implemented.')),
 
   cc = [:t apply(t):a]   -> a
 }
