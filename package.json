@@ -27,7 +27,7 @@
     "docopt": "^0.4.0"
   },
   "devDependencies": {
-    "hifive-tap": "^0.1.1",
+    "hifive-tap": "^0.1.2",
     "hifive": "^0.1.0",
     "alright": "^1.0.0-alpha2",
     "faucet": "0.0.1",
