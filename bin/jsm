@@ -105,18 +105,20 @@ function parseArgs(spec, options) {
 
 void function main() {
   var args     = parseArgs(stripComments(doc), { help: false })
-  var file     = args['<file>']
-  var language = args['--language']? languages[args['--language']] : null
   var output   = display(args['--output'])
-  var source   = args['compile']? core.resolveFile(file) : null
+  var file     = args['<file>']
+  var language = args['--language']?  languages[args['--language']]
+               :                      null
+  var source   = args.compile?  core.resolveFile(file, language)
+               :                null
 
   ; args.repl?            core.repl(language, language.state())
   : args.languages?       show(listLanguages())
   : args.exercise?        exercises.run(args['<file>']).otherwise(die)
   : args.help?            show(doc)
   : args.version?         show('jsm version ' + pkg.version)
-  : args['--compile']?    output(source.code())
   : args['--ast']?        output(toJSON(source.ast()))
   : args['--json']?       output(toJSON(source.jsAst()))
+  : args.compile?         output(source.code())
   :                       die(show(doc))
 }()
