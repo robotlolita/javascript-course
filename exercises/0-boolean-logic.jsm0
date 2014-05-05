@@ -7,8 +7,8 @@
 // visto que para qualquer número adicionado à 0, o resultado é o próprio
 // número.
 
-law identity_disjunction(x): x || false === x
-law identity_conjunction(x): x && true  === x
+law identity_disjunction(x): ???
+law identity_conjunction(x): ???
 
 
 // (2)
