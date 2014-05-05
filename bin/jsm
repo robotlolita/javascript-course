@@ -23,11 +23,12 @@
 var doc = [ 'jsm — A minimal multi-layered subset of JS for teaching.'
           , ''
           , 'Usage:'
-          , '  jsm repl --language=LANG'
-          , '  jsm languages'
-          , '  jsm [options] <file>'
-          , '  jsm -h | --help'
-          , '  jsm -v | --version'
+          , '  jsm repl --language=LANG         # An interactive session'
+          , '  jsm compile [options] <file>     # Compiles a file'
+          , '  jsm exercise <file>              # Runs the exercise <file>'
+          , '  jsm languages                    # Lists available languages'
+          , '  jsm help                         # Shows this screen'
+          , '  jsm version                      # Shows version number'
           , ''
           , 'Options:'
           , '  -l, --language=FILE  Uses language definitions from FILE.'
@@ -35,8 +36,6 @@ var doc = [ 'jsm — A minimal multi-layered subset of JS for teaching.'
           , '  -a, --ast            Displays a JSON of the AST of a program.'
           , '  -o, --output=FILE    Outputs to FILE instead of stdout.'
           , '  -j, --json           Outputs JS AST as JSON.'
-          , '  -h, --help           Displays this screen and exits.'
-          , '  -v, --version        Displays the version number and exits.'
           ].join('\n')
 
 
@@ -50,6 +49,7 @@ var core      = require('../lib/core')
 var languages = require('../lib/languages')
 
 var keys = Object.keys
+var show = console.log.bind(console)
 
 var root   = path.resolve('.')
 
@@ -60,6 +60,10 @@ function read(filename) {
 write = curry(write, 2)
 function write(filename, data) {
   return fs.writeFileSync(filename, data, 'utf-8')
+}
+
+function stripComments(doc) {
+  return doc.replace(/\#.+/g, '')
 }
 
 function die() {
@@ -84,20 +88,40 @@ function listLanguages() {
          }).join('\n')
 }
 
+function parseArgs(spec, options) {
+  var _oldExit = process.exit
+  var _oldLog  = console.log
+  try {
+    process.exit = function(){ throw new Error }
+    console.log  = function(){ }
+
+    return docopt(spec, options)
+  } catch(e) {
+    show(doc)
+    _oldExit.call(process, 1)
+  } finally {
+    process.exit = _oldExit
+    console.log  = _oldLog
+  }
+}
+
 void function main() {
-  var args     = docopt(doc, { version: pkg.version })
+  var args     = parseArgs(stripComments(doc), { help: false })
   var file     = args['<file>']
   var language = args['--language']? languages[args['--language']] : null
-  var show     = display(args['--output'])
+  var output   = display(args['--output'])
   var repl     = args['repl']
   var list     = args['languages']
-  var compile  = !repl && !list
-  var source   = compile? core.resolveFile(file) : null
+  var help     = args['help']
+  var version  = args['version']
+  var source   = args['compile']? core.resolveFile(file) : null
 
   ; repl?               core.repl(language, language.state())
   : list?               show(listLanguages())
-  : args['--compile']?  show(source.code)
-  : args['--ast']?      show(toJSON(source.ast))
-  : args['--json']?     show(toJSON(source.jsAst))
+  : help?               show(doc)
+  : version?            show('jsm version ' + pkg.version)
+  : args['--compile']?  output(source.code)
+  : args['--ast']?      output(toJSON(source.ast))
+  : args['--json']?     output(toJSON(source.jsAst))
   :                     die(show(doc))
 }()
