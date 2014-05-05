@@ -19,6 +19,7 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 var BaseLanguage = require('./common/BaseLanguage').BaseLanguage
+var BaseCompiler = require('./common/BaseLanguage').BaseCompiler
 var _            = require('../lib/gen')
 
 exports.name  = 'Boolean Logic'
@@ -39,12 +40,10 @@ ometa Parser <: BaseLanguage {
        | identifier:a                             -> [#Force, a]
        | value,
 
-  statement = letConstruct,
-
-  program = (ws statement)*:xs ws eof -> [#Program, xs]
+  statement = letConstruct
 }
 
-ometa Compiler {
+ometa Compiler <: BaseCompiler {
   Let     cc:id cc:val   -> _.var(id, _.fn(id, [], _.block([_.return(val)]), {})),
   Force   cc:id          -> _.call(id, []),
   If      cc:a cc:b cc:c -> _.cond(a, b, c),
@@ -52,10 +51,5 @@ ometa Compiler {
   Or      cc:a cc:b      -> _.or(a, b),
   Not     cc:a           -> _.not(a),
   Lit     :a             -> _.lit(a),
-  Id      :a             -> _.id(a),
-  Program [cc*:xs]       -> _.program(xs),
-  Bottom                 -> _.raise(_.error( _.id('Error')
-                                           , 'Not implemented.')),
-
-  cc = [:t apply(t):a]   -> a
+  Id      :a             -> _.id(a)
 }

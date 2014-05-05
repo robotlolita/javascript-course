@@ -19,6 +19,8 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+var _ = require('../../lib/gen')
+
 /**
  * A list of reserved names in the language.
  *
@@ -28,6 +30,7 @@ var reserved = [ 'function'
                , 'true'
                , 'false'
                , 'let'
+               , 'law'
                ]
 
 /**
@@ -68,6 +71,23 @@ ometa BaseLanguage {
          | '[' ws expr:hd ws ']'                      -> [#Vector, [hd]],
          | '[' ws ']'                                 -> [#Vector, []],
 
-  // Binding constructs & stuff
+  // Statements
   letConstruct = keyword('let') ws identifier:a ws '=' ws expr:b -> [#Let, a, b],
+  program      = (ws statement)*:xs ws eof -> [#Program, xs],
+
+  // Testing constructs
+  testStmt     = lawConstruct | statement,
+  testProgram  = (ws testStmt)*:xs ws eof -> [#Program, xs],
+
+  lawConstruct = keyword('law') ws identifier:a ws lawArgs:bs ws '=' ws expr:c -> [#Law, a, bs, c],
+  lawArgs      = '(' ws listOf(#identifier, ','):xs ws ')' -> xs
+}
+
+ometa BaseCompiler {
+  Law cc:id [cc*:args] cc:ex -> _.var(id, _.fn(id, args, _.block([_.return(ex)]), {})),
+  Bottom                     -> _.raise(_.error( _.id('Error')
+                                            , 'Not implemented.')),
+  Program [cc*:xs]           -> _.program(xs),
+
+  cc = [:t apply(t):a] -> a
 }
