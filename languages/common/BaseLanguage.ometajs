@@ -19,7 +19,8 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var _ = require('../../lib/gen')
+var _         = require('../../lib/gen')
+var stringify = require('escodegen').generate
 
 /**
  * A list of reserved names in the language.
@@ -31,6 +32,7 @@ var reserved = [ 'function'
                , 'false'
                , 'let'
                , 'law'
+               , 'satisfies'
                ]
 
 /**
@@ -79,12 +81,14 @@ ometa BaseLanguage {
   testStmt     = lawConstruct | statement,
   testProgram  = (ws testStmt)*:xs ws eof -> [#Program, xs],
 
-  lawConstruct = keyword('law') ws identifier:a ws lawArgs:bs ws '=' ws expr:c -> [#Law, a, bs, c],
-  lawArgs      = '(' ws listOf(#identifier, ','):xs ws ')' -> xs
+  lawConstruct = keyword('law') ws identifier:a ws lawArgs:bs ws ':' ws lawBody:c  -> [#Law, a, bs, c],
+  lawBody      = expr:a ws "===" ws expr:b                                         -> [#Equiv, a, b],
+  lawArgs      = '(' ws listOf(#identifier, ','):xs ws ')'                         -> xs
 }
 
 ometa BaseCompiler {
   Law cc:id [cc*:args] cc:ex -> _.var(id, _.fn(id, args, _.block([_.return(ex)]), {})),
+  Equiv cc:a cc:b            -> _.call(_.id('$equiv'), [a, b, _.lit(stringify(a) + ' = ' + stringify(b))]),
   Bottom                     -> _.raise(_.error( _.id('Error')
                                             , 'Not implemented.')),
   Program [cc*:xs]           -> _.program(xs),
