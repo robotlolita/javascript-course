@@ -21,33 +21,16 @@
 
 var spec    = require('hifive')()
 var alright = require('alright')
+var claire  = require('claire')
+
+var forAll = claire.forAll
+var T      = claire.data
 
 module.exports = spec('Boolean Logic', function(it, spec) {
 
-  it('(1) Identidade', function() {
-    identity_disjunctionA() => true
-    identity_disjunctionB() => false
-
-    identity_conjunctionA() => true
-    identity_conjunctionB() => false
+  spec('(1) Identidade', function(it) {
+    it('Disjunção', forAll(T.Bool).satisfy(identity_disjunction).asTest())
+    it('Conjunção', forAll(T.Bool).satisfy(identity_conjunction).asTest())
   })
 
-  it('(2) Aniquilação', function() {
-    annihilator_conjunctionA() => true
-    annihilator_conjunctionB() => true
-
-    annihilator_disjunctionA() => false
-    annihilator_disjunctionB() => false
-  })
-
-  it('(3) Complementação', function() {
-    complementation_false() => false
-    complementation_true()  => true
-  })
-
-  it('(4) Derivando negação do operador condicional', function() {
-    negation1() => false
-    negation2() => true
-  })
-  
 })

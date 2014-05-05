@@ -7,17 +7,8 @@
 // visto que para qualquer número adicionado à 0, o resultado é o próprio
 // número.
 
-// Qual o valor de identidade da operação de disjunção (||)?
-let identity_disjunction = ???
-
-let identity_disjunctionA = true  || identity_disjunction
-let identity_disjunctionB = false || identity_disjunction
-
-// Qual o valor de identidade da operação de conjunção (&&)?
-let identity_conjunction = ???
-
-let identity_conjunctionA = true  && identity_conjunction
-let identity_conjunctionB = false && identity_conjunction
+law identity_disjunction(x): x || false === x
+law identity_conjunction(x): x && true  === x
 
 
 // (2)
@@ -27,18 +18,6 @@ let identity_conjunctionB = false && identity_conjunction
 //
 // Por exemplo, multiplicação exibe essa propriedade, visto que qualquer
 // número multiplicado por 0 sempre resulta em 1.
-
-// Qual o valor de aniquilação para a operação de conjunção (&&)?
-let annihilator_conjunction = ???
-
-let annihilator_conjunctionA = true  && annihilator_conjunction
-let annihilator_conjunctionB = false && annihilator_conjunction
-
-// Qual o valor de aniquilação para a operação de disjunção (||)?
-let annihilator_disjunction = ???
-
-let annihilator_disjunctionA = true  || annihilator_disjunction
-let annihilator_disjunctionB = false || annihilator_disjunction
 
 
 // (3)
@@ -50,22 +29,7 @@ let annihilator_disjunctionB = false || annihilator_disjunction
 //
 // Altere as expressões a seguir de forma que a lei descrita se aplique:
 
-// Para todo valor α a combinação (β && β), aonde β pode ser tanto α
-// quanto !α, a expressão sempre retorna falso:
-let complementation1 = true
-
-let complementation_false = complementation1 && complementation1
-
-
-// Para todo valor α a combinação (β || β), aonde β pode ser tanto α
-// quanto !α, a expressão sempre retorna verdadeiro:
-let complementation2 = false
-
-let complementation_true  = complementation2 || complementation2
-
-
 // (4)
 // Mostre como é possível expressar a operação de negação (!) através
 // do operador condicional (?:)
-let negation1 = true  ? ??? : ???
-let negation2 = false ? ??? : ???
+

@@ -37,15 +37,14 @@ ometa Parser <: BaseLanguage {
        | expr:a ws "&&" ws expr:b                 -> [#And, a, b]
        | expr:a ws "||" ws expr:b                 -> [#Or, a, b]
        | "!" ws expr:a                            -> [#Not, a]
-       | identifier:a                             -> [#Force, a]
+       | identifier:a
        | value,
 
   statement = letConstruct
 }
 
 ometa Compiler <: BaseCompiler {
-  Let     cc:id cc:val   -> _.var(id, _.fn(id, [], _.block([_.return(val)]), {})),
-  Force   cc:id          -> _.call(id, []),
+  Let     cc:id cc:val   -> _.var(id, val),
   If      cc:a cc:b cc:c -> _.cond(a, b, c),
   And     cc:a cc:b      -> _.and(a, b),
   Or      cc:a cc:b      -> _.or(a, b),
