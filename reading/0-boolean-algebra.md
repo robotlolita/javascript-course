@@ -12,6 +12,8 @@ Nesse modelo computacional uma álgebra é formada pelos valores *Verdadeiro* e
 As regras para essa linguagem podem ser definidas da seguinte forma:
 
 ```hs
+<letter>     ::= a | b | c | ... | z | A | B | C | ... | Z
+<digit>      ::= 0 | 1 | 2 | ... | 9
 <identifier> ::= <letter> (<letter> | <digit> | _)+
 <value>      ::= true | false
 <expr>       ::= ( <expr> )                     -- Agrupamento
@@ -23,3 +25,8 @@ As regras para essa linguagem podem ser definidas da seguinte forma:
                | <value>
 <stmt>       ::= let <identifier> = <expr>      -- Binding
 ```
+
+Por essas regras podemos saber quais construções são válidas segundo a sintaxe
+da linguagem. Como os símbolos podem ser combinados, e em que contextos esses
+símbolos podem ser utilizados. Mas nada nessas regras nos diz qual o
+significado dessas combinações de símbolos e construções.
