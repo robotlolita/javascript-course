@@ -29,7 +29,8 @@
     "hifive-tap": "^0.1.2",
     "hifive": "^0.1.0",
     "alright": "^1.0.0-alpha2",
-    "sweet.js": "^0.5.0"
+    "sweet.js": "^0.5.0",
+    "hifive-spec": "^0.1.1"
   },
   "devDependencies": {
     "faucet": "0.0.1"
