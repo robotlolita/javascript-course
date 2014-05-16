@@ -5,7 +5,7 @@ var static = require('node-static'),
 	fs = require('fs');
 
 // create static server for decks
-var fileServer = new static.Server('../');
+var fileServer = new static.Server(__dirname);
 
 var server = http.createServer(function (req, res) {
 
