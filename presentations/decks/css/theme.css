@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Montserrat:700);
+@import url(http://fonts.googleapis.com/css?family=Lora:400);
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700,400italic,700italic);
 /**
  * Black theme for reveal.js.
@@ -35,7 +35,7 @@ body {
 .reveal h6 {
   margin: 0 0 20px 0;
   color: #424242;
-  font-family: "Montserrat", Impact, sans-serif;
+  font-family: "Lora", serif;
   line-height: 0.9em;
   letter-spacing: -0.03em;
   text-transform: none;
@@ -145,4 +145,10 @@ body {
 }
 #presentation .white.fading {
   opacity: 0.8;
+}
+#presentation .red {
+  color: #FF6961 /*#C23B22; */
+}
+#presentation .regular {
+  font-family: "Open Sans", sans-serif;
 }
