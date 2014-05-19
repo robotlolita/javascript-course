@@ -5,7 +5,14 @@
 *** Why functional programming matters
 *** A quick overview of JavaScript--'s syntax
 ** Boolean Logic
-** Arithmetic Expressions
+*** The simplest language for starting
+*** The primitives in the language
+*** Introduction to the syntax in the language
+*** Formalisation of the syntax in the language
+*** Introduction of the semantics in the language
+*** Formalisation of the semantics in the language
+*** Deriving theorems from the composition of primitives
+*** Exercises on theorems
 ** Lambda Calculus
 ** Recursive data types
 ** Generalised recursion

@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Boolean Algebra</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="reveal.js/css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+      }
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="reveal.js/lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div id="presentation" class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        <section>
+          <h2>1. Álgebra Booleana</h2>
+          <h4 class="fading regular">(Uma introdução a CFGs, Semântica e Teoremas)</h4>
+        </section>
+        <section>
+          <h2>Não é sobre Álgebra Booleana</h2>
+          <h4 class="fading regular">(É só a linguagem mais simples para esses conceitos)</h4>
+        </section>
+        <section>
+          <h2>O que é uma linguagem?</h2>
+          <ul>
+            <li>Primitivos e Runtime
+            <li>Sintaxe
+            <li>Semântica
+          </ul>
+        </section>
+        <section>
+          <h2>Primitivos de Álgebra Booleana</h2>
+          <ul>
+            <li>True e False
+            <li>Conjunção, Disjunção e Negação
+          </ul>
+        </section>
+        <section>
+          <h2>Sintaxe</h2>
+          <ul>
+            <li>Quais símbolos você pode usar na linguagem
+            <li>Como você pode combinar esses símbolos
+          </ul>
+        </section>
+        <section>
+          <h2>Sintaxe em álgebra booleana</h2>
+          <pre><code class="scala">
+let x = true && false
+let y = x || !false
+          </code></pre>
+        </section>
+        <section>
+          <h2>Sintaxe em álgebra booleana</h2>
+          <br>
+          <h4>
+\begin{align}
+  value  ::= & {\bf true} \quad | \quad {\bf false}                                                                         \\
+  expr   ::= & {\it expr} \enspace {\bf ?} \enspace {\it expr} \enspace {\bf :} \enspace {\it expr}     & \quad (If)        \\
+           | & {\it expr} \enspace {\bf \&\&} \enspace {\it expr}                                       & \quad (Conjunção) \\
+           | & {\it expr} \enspace {\bf ||} \enspace {\it expr}                                         & \quad (Disjunção) \\
+           | & {\bf !} {\it expr}                                                                       & \quad (Negação)   \\
+           | & {\it identifier}                                                                                             \\
+           | & {\it value}                                                                                                  \\
+  stmt   ::= & {\bf let} \enspace {\it identifier} \, {\bf =} \, {\it expr}                             & \quad (Binding)   \\
+  code   ::= & {\it stmt}*
+\end{align}
+          </h4>
+        </section>
+        <section>
+          <h2>Semântica</h2>
+          <h3 class="fading regular">O que a composição de símbolos <strong>significa</strong></h3>
+          <br>
+          <h4 class="fragment">$true \, {\bf ||} \, false \, = \, ?$</h4>
+          <h4 class="fragment">$(true {\bf \&\&} (!false {\bf ||} true)) {\bf ?} {\bf !} false {\bf :} (true {\bf ||} true) = ?$</h4>
+        </section>
+        <section>
+          <h2>Semântica em álgebra booleana</h2>
+          <br>
+          <h4>
+\begin{equation}
+  \frac{}{ true  } \quad
+  \frac{}{ false }
+\end{equation}
+          </h4>
+        </section>
+        <section>
+          <h2>Semântica em álgebra booleana</h2>
+          <br>
+          <h4>
+\begin{equation}
+  \frac{ true   \, \&\& \, false }{ true   } \quad
+  \frac{ true   \, \&\& \, \alpha}{ \alpha } \quad
+  \frac{ \alpha \, \&\& \, true  }{ \alpha }
+\end{equation}
+          </h4>
+        </section>
+        <section>
+          <h2>Semântica em álgebra booleana</h2>
+          <br>
+          <h4>
+\begin{equation}
+  \frac{ false  \, || \, false }{ false  } \quad
+  \frac{ false  \, || \, \alpha}{ \alpha } \quad
+  \frac{ \alpha \, || \, false }{ \alpha }
+\end{equation}
+          </h4>
+        </section>
+        <section>
+          <h2>Semântica em álgebra booleana</h2>
+          <br>
+          <h4>
+\begin{equation}
+  \frac{ !false  }{ true  } \quad
+  \frac{ !true   }{ false } \quad
+  \frac{ !\alpha }{ ? }
+\end{equation}
+          </h4>
+          <br>
+          <h4 class="fragment">!x = ?</h4>
+          <h4 class="fragment">!(true || false) = ?</h4>
+        </section>
+
+        <section>
+          <h2>Semântica em álgebra booleana</h2>
+          <br>
+          <h4>\[!(true || false) = ?\]</h4>
+          <br>
+          <h4 class="fragment">\[!(true || false) \Longrightarrow \frac{ true || \alpha }{ true } \quad (1)\]</h4>
+          <br>
+          <h4 class="fragment">
+            \[!true \Longrightarrow \frac{ !true }{ false } \quad (2)\]</h4>
+          <br>
+          <h4 class="fragment">\[!true \Longrightarrow false \quad (3)\]</h4>
+        </section>
+
+        <section>
+          <h2>Bindings</h2>
+          <ul>
+            <li>Linguagens geralmente possuem nomes.
+            <li>Bindings definem o que cada nome significa.
+            <li>IOW, é o dicionário do seu programa.
+          </ul>
+        </section>
+
+        <section>
+          <h2>Bindings em álgebra booleana</h2>
+          <br>
+          <h4>
+\begin{equation}
+  \frac{ \rho[\alpha_{id} \mapsto \beta] }{ \rho \vdash \alpha_{id} \implies \beta } \quad
+  \frac{ \rho \vdash {\bf let} \, \alpha_{id} = \beta }{ \rho_1[ \rho \cdot \alpha_{id} \mapsto \beta] }
+\end{equation}
+          </h4>
+        </section>
+
+        <section>
+          <h2>-matemática, +exemplos</h2>
+          <br>
+          <h4>${\bf let} \, x = true$</h4>
+          <h4>${\bf let} \, y = false$</h4>
+          <h4>$!(x || y) = ?$</h4>
+        </section>
+        
+        <section>
+          <h2>-matemática, +exemplos</h2>
+          <br>
+          <h4>
+\begin{align}
+  {\bf let} \, x = & true                       & \rho[] \implies \rho_1[x \mapsto T]                                             \, (1) \\
+  {\bf let} \, y = & false                      & \rho_1[x \mapsto true] \implies \rho_2[x \mapsto true \cdot y \mapsto false]    \, (2) \\ \\
+  !(x || y)      = & !(true || y)               & \rho_2[x \mapsto true \cdot y \mapsto false] \vdash x \implies true             \, (3) \\
+                 = & !(true || false)           & \rho_2[x \mapsto true \cdot y \mapsto false] \vdash y \implies false            \, (4) \\
+                 = & !true                      & true || false \implies true                                                     \, (4) \\
+                 = & false                      & !true \implies false                                                            \, (5)
+\end{align}
+          </h4>
+        </section>
+
+        <section>
+          <h2>Semântica em álgebra booleana</h2>
+          <br>
+          <h4>
+\begin{equation}
+  \frac{ {\bf true}  \, ? \, \alpha : \beta }{ \alpha} \quad
+  \frac{ {\bf false} \, ? \, \alpha : \beta }{ \beta } \quad
+  \frac{ \Gamma[\alpha \mapsto \beta] }{ \Gamma[\alpha / \beta] \, ? \, \alpha : \beta }
+\end{equation}
+          </h4>
+        </section>
+
+        <section>
+          <h2>Laws!</h2>
+          <br>
+          <ul>
+            <li>Provas de que seu programa <strong>funciona</strong>
+            <li>Podem ser utilizados para entender um programa
+            <li>Podem ser utilizados para testar um programa
+            <li>Te dão garantias de composição entre termos
+          </ul>
+        </section>
+
+        <section>
+          <h2>Laws!</h2>
+          <br>
+          <h4>$\forall x,y: Bool. \quad {\bf law} \, associativity_1(x, y): x \, \&\& \, y \equiv y \, \&\& \, x$</h4>
+          <h4>$\forall x,y: Bool. \quad {\bf law} \, associativity_2(x, y): x \, || \, y \equiv y \, || \, x$</h4>
+        </section>
+        
+        <section>
+          <h2>Laws!</h2>
+          <br>
+          <h4>$\forall x, y: Bool. \quad {\bf law} \, associativity_1(x, y): x \, \&\& \, y \equiv y \, \&\& \, x$</h4>
+          <br>
+          <h4>
+\begin{equation}
+  \frac{ true  \, \&\& \, false }{ true  } \quad
+  \frac{ false \, \&\& \, true  }{ true  } \quad
+  \frac{ true  \, \&\& \, true  }{ true  } \quad
+  \frac{ false \, \&\& \, false }{ false }
+\end{equation}
+          </h4>
+        </section>
+
+        <section>
+          <h4 class="fading regular">Wrapping up!</h4>
+          <br><br><br><br>
+          <h1>Questions?</h1>
+          <br><br><br>
+          <p class="footnote">
+            Quildreen Motta, <br>
+            <a href="http://github.com/robotlolita">@robotlolita</a>
+          </p>
+        </section>
+      </div>
+    </div>
+
+    <script src="reveal.js/lib/js/head.min.js"></script>
+    <script src="reveal.js/js/reveal.min.js"></script>
+
+    <script>
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'linear',
+        backgroundTransition: 'slide',
+
+        math: {
+          mathjax: 'http://cdn.mathjax.org/mathjax/latest/MathJax.js',
+          config: 'TeX-MML-AM_HTMLorMML'
+        },
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() {return !!document.body.classList; } },
+          { src: 'reveal.js/plugin/math/math.js', async: true }
+        ]
+      });
+    </script>
+
+    <!-- controldeck.js -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/controldeck-slides.js"></script>
+
+  </body>
+</html>

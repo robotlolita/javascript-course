@@ -152,3 +152,7 @@ body {
 #presentation .regular {
   font-family: "Open Sans", sans-serif;
 }
+#presentation pre code {
+  font-size: 1.6em;
+  line-height: 1.8em
+}
