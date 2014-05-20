@@ -72,7 +72,7 @@ ometa Parser <: BaseLanguage {
   unExpr = "!" ws unExpr:a -> [#Not, a]
          | primExpr,
 
-  primExpr = primExpr:a ws expr:b -> [#App, a, b]
+  primExpr = primExpr:a ws '(' ws expr:b ws ')' -> [#App, a, b]
            | primExprHd,
 
   primExprHd = '(' ws expr:a ws ')' -> a
