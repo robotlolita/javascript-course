@@ -9,9 +9,9 @@ uma das formas de especificação.
 
 Linguagens, tanto naturais (Inglês, Português, ...) quanto linguagens de
 programação (JavaScript, C#, ...) são estudadas pela área de linguística, e
-categorizadas em uma hierarquia chamada *hierarquia de Chomsky*.
+categorizadas em uma hierarquia chamada *[hierarquia de Chomsky][Chomsky]*.
 
-![Hierarquia de Chomsky]()
+![Hierarquia de Chomsky](images/Chomsky-hierarchy.svg)
 
 Grande parte das linguagens de programação (e todas que importam nesse
 workshop) pertencem à classe de linguagens livres de contexto (CFG). Essas
@@ -101,3 +101,4 @@ linguagem.
 
 
 [BNF]: http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form
+[Chomsky]: http://en.wikipedia.org/wiki/Chomsky_hierarchy
