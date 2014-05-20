@@ -50,14 +50,14 @@ exemplo uma linguagem aritimética simples. Os terminais nessa linguagem (os
 símbolos fundamentais) seriam algo como números e os símbolos representando
 operações como adição ou subtração:
 
-```hs
+```scala
 Alfabeto = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, +, - }
 ```
 
 De forma similar, podemos pensar em combinações usando esses símbolos, e nomear
 essas combinações:
 
-```hs
+```scala
 Combinações = { número, adição, subtração, agrupamento, ... }
 ```
 
@@ -67,7 +67,7 @@ notação popular para descrever essas combinações chamada
 [Backus-Naur Form][BNF] (BNF). Se a utilizarmos para descrever as regras dessa
 linguagem aritimética teríamos algo assim:
 
-```hs
+```scala
 <Dígito>      = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 <Número>      = <Dígito> <Número>
               | <Dígito>
