@@ -1,0 +1,85 @@
+// Copyright (c) 2014 Quildreen Motta <quildreen@gmail.com>
+//
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation files
+// (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge,
+// publish, distribute, sublicense, and/or sell copies of the Software,
+// and to permit persons to whom the Software is furnished to do so,
+// subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+var BaseLanguage = require('./common/BaseLanguage').BaseLanguage
+var BaseCompiler = require('./common/BaseLanguage').BaseCompiler
+var _            = require('../lib/gen')
+
+
+exports.name  = 'Lambda Calculus'
+exports.state = function() {
+  return {}
+}
+
+ometa Parser <: BaseLanguage {
+  value = keyword('true')  -> [#Lit, true]
+        | keyword('false') -> [#Lit, false]
+        | number
+        | string
+        | bottom,
+
+  lambda = identifier:a "=>" expr:b -> [#Lambda, a, b]
+  
+  expr  = "(" ws expr:a ws ")"                     -> a
+        | expr:a ws expr:b                         -> [#App, a, b]
+        | expr:a ws "*" ws expr:b                  -> [#Mul, a, b]
+        | expr:a ws "/" ws expr:b                  -> [#Div, a, b]
+        | expr:a ws "%" ws expr:b                  -> [#Mod, a, b]
+        | expr:a ws "+" ws expr:b                  -> [#Add, a, b]
+        | expr:a ws "-" ws expr:b                  -> [#Sub, a, b]
+        | expr:a ws "<" ws expr:b                  -> [#Lt, a, b]
+        | expr:a ws "<=" ws expr:b                 -> [#Lte, a, b]
+        | expr:a ws ">" ws expr:b                  -> [#Gt, a, b]
+        | expr:a ws ">=" ws expr:b                 -> [#Gte, a, b]
+        | expr:a ws "===" ws expr:b                -> [#Eq, a, b]
+        | expr:a ws "!==" ws expr:b                -> [#Neq, a, b]
+        | expr:a ws "?" ws expr:b ws ":" ws expr:c -> [#If, a, b, c]
+        | expr:a ws "&&" ws expr:b                 -> [#And, a, b]
+        | expr:a ws "||" ws expr:b                 -> [#Or, a, b]
+        | "!" ws expr:a                            -> [#Not, a]
+        | lambda
+        | identifier
+        | value,
+
+  statement = letConstruct
+}
+
+ometa Compiler <: BaseCompiler {
+  Let     cc:id cc:val   -> _.var(id, val),
+  If      cc:a cc:b cc:c -> _.cond(a, b, c),
+  And     cc:a cc:b      -> _.and(a, b),
+  Or      cc:a cc:b      -> _.or(a, b),
+  Not     cc:a           -> _.not(a),
+  Lit     :a             -> _.lit(a),
+  Id      :a             -> _.id(a),
+  App     cc:a cc:b      -> _.call(a, [b]),
+  Lambda  cc:a cc:b      -> _.lambda(a, b),
+  Mul     cc:a cc:b      -> _.call(_.id('$mul'), [a, b]),
+  Div     cc:a cc:b      -> _.call(_.id('$div'), [a, b]),
+  Mod     cc:a cc:b      -> _.call(_.id('$mod'), [a, b]),
+  Add     cc:a cc:b      -> _.call(_.id('$add'), [a, b]),
+  Sub     cc:a cc:b      -> _.call(_.id('$sub'), [a, b]),
+  Lt      cc:a cc:b      -> _.call(_.id('$lt'), [a, b]),
+  Lte     cc:a cc:b      -> _.call(_.id('$lte'), [a, b]),
+  Gt      cc:a cc:b      -> _.call(_.id('$gt'), [a, b]),
+  Gte     cc:a cc:b      -> _.call(_.id('$gte'), [a, b]),
+  Eq      cc:a cc:b      -> _.call(_.id('$eq'), [a, b]),
+  Neq     cc:a cc:b      -> _.call(_.id('$neq'), [a, b])
+}
