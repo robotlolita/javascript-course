@@ -23,12 +23,12 @@
 var doc = [ 'jsm — A minimal multi-layered subset of JS for teaching.'
           , ''
           , 'Usage:'
-          , '  jsm repl --language=LANG         # An interactive session'
-          , '  jsm compile [options] <file>     # Compiles a file'
-          , '  jsm exercise <file>              # Runs the exercise <file>'
-          , '  jsm languages                    # Lists available languages'
-          , '  jsm help                         # Shows this screen'
-          , '  jsm version                      # Shows version number'
+          , '  jsm repl [options]              # An interactive session'
+          , '  jsm compile [options] <file>    # Compiles a file'
+          , '  jsm exercise <file>             # Runs the exercise <file>'
+          , '  jsm languages                   # Lists available languages'
+          , '  jsm help                        # Shows this screen'
+          , '  jsm version                     # Shows version number'
           , ''
           , 'Options:'
           , '  -l, --language=FILE  Uses language definitions from FILE.'
@@ -36,6 +36,7 @@ var doc = [ 'jsm — A minimal multi-layered subset of JS for teaching.'
           , '  -a, --ast            Displays a JSON of the AST of a program.'
           , '  -o, --output=FILE    Outputs to FILE instead of stdout.'
           , '  -j, --json           Outputs JS AST as JSON.'
+          , '  --print-compiled     Displays the compiled code in the REPL.'
           ].join('\n')
 
 
@@ -79,10 +80,10 @@ function toJSON(data) {
 
 function listLanguages() {
   return 'Available languages:\n\n'
-       + '  Ext.      Description\n'
+       + '  Ext.\tDescription\n'
        + '  ----------------------------------------------------------\n'
        + keys(languages).map(function(k) {
-           return '  ' + k + '      ' + languages[k].name
+           return '  ' + k + '\t' + languages[k].name
          }).join('\n')
 }
 
@@ -112,7 +113,7 @@ void function main() {
   var source   = args.compile?  core.resolveFile(file, language)
                :                null
 
-  ; args.repl?            core.repl(language, language.state())
+  ; args.repl?            core.repl(language, language.state(), args['--print-compiled'])
   : args.languages?       show(listLanguages())
   : args.exercise?        exercises.run(args['<file>']).otherwise(die)
   : args.help?            show(doc)

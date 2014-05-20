@@ -30,7 +30,8 @@
     "hifive": "^0.1.0",
     "alright": "^1.0.0-alpha2",
     "sweet.js": "^0.5.0",
-    "hifive-spec": "^0.1.1"
+    "hifive-spec": "^0.1.1",
+    "chalk": "^0.4.0"
   },
   "devDependencies": {
     "faucet": "0.0.1"
