@@ -63,11 +63,11 @@ ometa BaseLanguage {
 
   // Values
   digits = digit+:as -> Number(as.join('')),
-  number = digits:a ('.' digits:b)? -> [#Number, Number(a + '.' + (b || 0))],
+  number = digits:a ('.' digits:b)? -> [#Lit, Number(a + '.' + (b || 0))],
 
   stringEscape = token('\\"'),
   stringChar   = (stringEscape | (~seq('"') char)):a -> a,
-  string       = '"' <stringChar*>:as '"'            -> [#String, as],
+  string       = '"' <stringChar*>:as '"'            -> [#Lit, as],
 
   vector = '[' ws expr:hd (ws ',' ws expr)*:tl ws ']' -> [#Vector, [hd].concat(tl)],
          | '[' ws expr:hd ws ']'                      -> [#Vector, [hd]],
