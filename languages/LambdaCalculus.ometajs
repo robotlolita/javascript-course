@@ -21,11 +21,12 @@
 var BaseLanguage = require('./common/BaseLanguage').BaseLanguage
 var BaseCompiler = require('./common/BaseLanguage').BaseCompiler
 var _            = require('../lib/gen')
+var runtime      = require('./runtime/core')
 
 
 exports.name  = 'Lambda Calculus'
 exports.state = function() {
-  return {}
+  return runtime
 }
 
 ometa Parser <: BaseLanguage {
