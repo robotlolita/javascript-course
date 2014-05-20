@@ -81,6 +81,6 @@ ometa Compiler <: BaseCompiler {
   Lte     cc:a cc:b      -> _.call(_.id('$lte'), [a, b]),
   Gt      cc:a cc:b      -> _.call(_.id('$gt'), [a, b]),
   Gte     cc:a cc:b      -> _.call(_.id('$gte'), [a, b]),
-  Eq      cc:a cc:b      -> _.call(_.id('$eq'), [a, b]),
-  Neq     cc:a cc:b      -> _.call(_.id('$neq'), [a, b])
+  Eq      cc:a cc:b      -> _.eq(a, b),
+  Neq     cc:a cc:b      -> _.neq(a, b)
 }
