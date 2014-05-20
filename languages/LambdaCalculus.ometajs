@@ -36,7 +36,7 @@ ometa Parser <: BaseLanguage {
         | string
         | bottom,
 
-  lambda = identifier:a "=>" expr:b -> [#Lambda, a, b]
+  lambda = identifier:a "=>" expr:b -> [#Lambda, a, b],
   
   expr  = "(" ws expr:a ws ")"                     -> a
         | expr:a ws expr:b                         -> [#App, a, b]
