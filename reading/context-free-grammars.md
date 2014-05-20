@@ -11,7 +11,8 @@ Linguagens, tanto naturais (Inglês, Português, ...) quanto linguagens de
 programação (JavaScript, C#, ...) são estudadas pela área de linguística, e
 categorizadas em uma hierarquia chamada *[hierarquia de Chomsky][Chomsky]*.
 
-[![Hierarquia de Chomsky by J. Finkelstein, under CC-BY-SA 3.0](https://raw.githubusercontent.com/robotlolita/javascript-course/master/reading/images/Chomsky-hierarchy.svg)](http://en.wikipedia.org/wiki/File:Chomsky-hierarchy.svg)
+![Hierarquia de Chomsky by J. Finkelstein, under CC-BY-SA 3.0](https://raw.githubusercontent.com/robotlolita/javascript-course/master/reading/images/Chomsky-hierarchy.svg)  
+[Hierarquia de Chomsky by J. Finkelstein, under CC-BY-SA 3.0](http://en.wikipedia.org/wiki/File:Chomsky-hierarchy.svg)
 
 Grande parte das linguagens de programação (e todas que importam nesse
 workshop) pertencem à classe de linguagens livres de contexto (CFG). Essas
