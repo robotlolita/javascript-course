@@ -19,6 +19,7 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+var show            = require('util').inspect
 var internalClassOf = Function.call.bind({}.toString)
 
 function classOf(a) {
@@ -27,7 +28,8 @@ function classOf(a) {
 
 function typeCheck(expected, actual) {
   if (classOf(actual) !== expected)
-    throw new TypeError('Expected a value of type ' + expected + ', got ' + classOf(actual))
+    throw new TypeError('Expected a value of type ' + expected
+                       + ', got ' + classOf(actual) + ': ' + show(actual))
 }
 
 exports.$mul = $mul
