@@ -14,6 +14,11 @@
 *** Deriving theorems from the composition of primitives
 *** Exercises on theorems
 ** Lambda Calculus
+*** O que é LC
+*** Como pensar em programação funcional
+*** Currying e partial application
+*** Composição de funções e modularização
+*** Funções de alta-ordem
 ** Recursive data types
 ** Generalised recursion
 ** Non-blocking concurrency and CPS

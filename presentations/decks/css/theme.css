@@ -136,6 +136,9 @@ body {
 #presentation strong {
   color: #424242;
 }
+#presentation .left {
+  text-align: left
+}
 #presentation .footnote {
   padding-top: 2em;
   text-align: right;
