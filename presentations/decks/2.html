@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Lambda Calculus</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="reveal.js/css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+      }
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="reveal.js/lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div style="display: none">
+$
+  \(\require{color}\)
+  \definecolor{blue}{RGB}{119,158,203}
+  \definecolor{green}{RGB}{119,221,119}
+  \definecolor{red}{RGB}{255,105,97}
+$
+    </div>
+
+    <div id="presentation" class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        <section>
+          <h2>2. Lambda Calculus</h2>
+          <h4 class="fading regular">(Programação funcional e de alta-ordem)</h4>
+        </section>
+
+        <section>
+          <h3>Um programa é uma série de instruções<span class="fragment red" data-fragment-index="0">?</span></h3>
+          <br>
+          <ul>
+            <li>x = 1 + 2
+            <li>y = f(x) <span class="fragment" data-fragment-index="0"><strong>aonde</strong> <em class="red">f(x) = x + 1</em></span>
+            <li>z = g(x) <span class="fragment" data-fragment-index="0"><strong>aonde</strong> <em class="red">g(x) = x * x</em></span>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Um programa é uma <strong>equação</strong></h2>
+          <br>
+          <h4>
+\begin{align}
+{\bf considere} & x    = 1 + 2 \\
+                & f(x) = x + 1 \\
+{\bf em} \\
+  & f(x)
+\end{align}
+          </h4>
+          <br>
+          <h4 class="fragment">$ f(x) \equiv f(1 + 2) $</h4>
+          <h4 class="fragment">$ f(3) \equiv 3 + 1 $</h4>
+          <h4 class="fragment">$ 3 + 1 \equiv 4 $</h4>
+        </section>
+
+        <section>
+          <h3 class="fading">
+            <div class="fragment shrink" data-fragment-index="1">
+              Mas isso é matemática, não programação!
+            </div>
+          </h3>
+          <h2 class="fragment" data-fragment-index="1">
+            <div class="fragment grow" data-fragment-index="1">
+              Mas... e se fosse?
+            </div>
+          </h2>
+        </section>
+
+        <section>
+          <h3>Alonzo Church deve ter pensado o mesmo</h3>
+          <h4 class="fading regular">(Antes dos computadores existirem, em '35)</h4>
+        </section>
+
+        <section>
+          <h2>Conheça <strong>Cálculo Lambda</strong></h2>
+          <h4 class="fading regular">(O modelo que vê computação como equações do ensino fundamental)</h4>
+        </section>
+
+        <section>
+          <h2>Como essa bodega funciona?</h2>
+          <br>
+          <h4>$ f(x) = x + 1; \quad y = 1 + 2; \quad z = f(y)$</h4>
+          <br>
+          <h5 class="regular fading fragment" data-fragment-index="1">
+            ( E se tudo fosse uma função? )
+          </h5>
+          <h4 class="fragment" data-fragment-index="1">
+            $ f(x) = x + 1; \quad g(x, y) = x + y; \quad h(x) = f(g(1, 2)) $
+          </h4>
+          <br>
+          <h5 class="regular fading fragment" data-fragment-index="2">
+            ( E se cada função pudesse ter só um parâmetro? )
+          </h5>
+          <h4 class="fragment" data-fragment-index="2">
+            $ f(x) = x + 1; \quad g(x)(y) = x + y; \quad h(x) = f(g(1)(2)) $
+          </h4>
+          <br>
+          <h5 class="regular fading fragment" data-fragment-index="3">
+            ( E se nenhuma função tivesse nome? )
+          </h5>
+          <h4 class="fragment" data-fragment-index="4">
+            'Cê 'tá me zoando?
+          </h4>
+        </section>
+
+        <section>
+          <h3>Cálculo Lambda: funções anônimas unárias</h3>
+          <br>
+          <h4>$ f(x) = x + 1 \\ y = f(1 + 2) $</h4>
+          <hr>
+          <h4>$ (\lambda x. x + 1) 1 + 2 $</h4>
+          <h4 class="fragment">
+            $ (\lambda \color{red}x\color{black}. \color{red}x\color{black} + 1) \color{red}1 + 2\color{black} $
+          </h4>
+          <h4 class="fragment">
+            $ (\lambda \color{red}(1 + 2)\color{black}. \color{red}(1 + 2)\color{black} + 1) $
+          </h4>
+          <h4 class="fragment">
+            $ (\lambda \color{red}3\color{black}. \color{red}3\color{black} + 1) $
+          </h4>
+          <h4 class="fragment">$ 3 + 1 $</h4>
+          <h4 class="fragment">$ 4 $</h4>
+        </section>
+
+        <section>
+          <h3>Cálculo Lambda para Programação</h3>
+          <br>
+          <h4>
+\begin{align}
+  value ::= & {\bf true} \, | \, {\bf false} \, | \, {\it number} \, | \, {\it string} \\
+  expr  ::= & {\it conditionalExpression}       & \quad (If) \\
+          | & {\it logicalExpression}           & \quad (\&\&, ||, !) \\
+          | & {\it relationalExpression}        & \quad (===, !==, >, <, >=, <=) \\
+          | & {\it arithmeticExpression}        & \quad (+, -, *, /, %) \\
+          | & {\it expr} ( {\it expr} )         & \quad (Application) \\
+          | & {\it ident} {\bf ->) {\it expr}   & \quad (Lambda) \\
+          | & {\it ident} \\
+          | & {\it value} \\
+  stmt  ::= & {\bf let} \, {\it ident} \, {\bf =} \, {\it expr}  & \quad (Binding) \\
+  code  ::= & {\it stmt}*
+\end{align}            
+          </h4>
+        </section>
+
+        <section>
+          <h2>Na prática</h2>
+          <br>
+          <h4>
+\[
+  {\bf let} \, {\it double} = x -> x * 2 \\
+  {\bf let} \, {\it main}   = {\it double}(2)
+\]
+          </h4>
+        </section>
+
+        <section>
+          <h2>Currying</h2>
+          <br>
+          <h4>$ {\bf let} \, {\it mean} = x -> (x + y) / 2 $</h4>
+          <h4 class="fragment">
+            $ {\bf let} \, {\it mean} = \color{red}x -> \color{green}y -> (\color{red}x\color{green} + y) / 2\color{black} $
+          </h4>
+          <h4 class="fragment">
+            $ {\bf let} \, {\it between} = \color{red}x -> \color{green}y -> \color{blue}z -> z >= \color{red}x\color{blue} && z <= \color{green}y\color{black} $
+          </h4>
+        </section>
+
+        <section>
+          <h2>Partial Application & Closures</h2>
+          <br>
+          <h4>
+\[
+  {\bf let} \, {\it between} = \color{red}x -> \color{green}y -> \color{blue}z -> z >= \color{red}x\color{blue} && z <= \color{green}y\color{black} \\
+  {\bf let} \, {\it entre0e10} = {\it between}(0)(10) \\ 
+  \\
+  {\it entre0e10}(1) \implies {\it true} \\
+  {\it entre0e10}(100) \implies {\it false}
+\]
+          </h4>
+        </section>
+
+        <section>
+          <h2>Combinadores</h2>
+          <h4 class="fading regular">( Funções que dependem só de seus parâmetros )</h4>
+          <br>
+          <h4>
+\[
+  {\bf let} \, {\it identidade} = x -> x         \\
+  {\bf let} \, {\it constante}  = x -> y -> x    \\
+  {\bf let} \, {\it apply}      = f -> x -> f(x) \\
+  \\
+  {\bf let} \, {\it sempre1} = {\it constante}(1) \\
+  {\it sempre1}(3) \implies {\it 1}
+\]
+          </h4>
+        </section>
+
+        <section>
+          <h2>Funções de Alta-Ordem</h2>
+          <h4 class="fading regular">( Funções que recebem funções como parâmetros )</h4>
+          <br>
+          <h4 class="regular">Situação: o dobro de um número mais 1</h4>
+          <h4 class="fragment">$ {\bf let} \, mais1 = x -> (x * 2) + 1 $</h4>
+          <h4 class="fragment">
+\[
+  {\bf let} \, dobro      = x -> x * 2 \\
+  {\bf let} \, mais1      = x -> x + 1 \\
+  {\bf let} \, dobroMais1 = x -> mais1(dobro(x))
+\]
+          </h4>
+          <h4 class="fragment">
+\[
+  {\bf let} \, combina    = f -> g -> x -> f(g(x)) \\
+  {\bf let} \, dobroMais1 = combina(mais1)(dobro)
+\]
+          </h4>
+        </section>
+
+        <section>
+          <h2>Funções de Alta-Ordem</h2>
+          <h4 class="regular">Situação: a função que você quer chamar existe, mas a ordem dos argumentos está errada</h4>
+          <br>
+          <h4>$ {\bf let} maiorQue  = x -> y -> x > y</h4>
+          <h4>$ {\bf let} maiorQue5 = x -> maiorQue(x)(5)</h4>
+          <br>
+          <h4 class="fragment">
+\[
+  {\bf let} \, inverso  = f -> x -> y -> f(y)(x)
+  {\bf let} \, maiorQue5 = inverso(maiorQue)(5)
+\]            
+          </h4>
+        </section>
+
+        <section>
+          <h2>Outras PLs: JavaScript</h2>
+          <br>
+          <h4>
+\begin{align}
+  5 \quad 5.20 && \quad (Valores numéricos)
+  x + y \quad x - y \quad x * y \quad x / y \quad x % y && \quad (Aritmética)
+  x === y \quad x !== y \quad x < y \quad x <= y \quad x > y \quad x >= y && \quad (Relacional)
+  function(x){ return y } && \quad (Lambda)
+  (x) => y  && \quad (Lambda ES6)
+  f(x)(y) && \quad (Aplicação)
+\end{align}
+          </h4>
+        </section>
+
+        <section>
+          <h2>Outras PLs: Java 8</h2>
+          <br>
+          <h4>
+\begin{align}
+  5 \quad 5.20 && \quad (Valores numéricos)
+  x + y \quad x - y \quad x * y \quad x / y \quad x % y && \quad (Aritmética)
+  x == y \quad x != y \quad x < y \quad x <= y \quad x > y \quad x >= y && \quad (Relacional)
+  x -> y && \quad (Lambda)
+  f(x)(y) && \quad (Aplicação)
+\end{align}
+          </h4>
+        </section>
+
+        <section>
+          <h2>Outras PLs: Haskell</h2>
+          <br>
+          <h4>
+\begin{align}
+  5 \quad 5.20 && \quad (Valores numéricos)
+  x + y \quad x - y \quad x * y \quad x / y \quad {\bf mod} \, x y && \quad (Aritmética)
+  x == y \quad x != y \quad x < y \quad x <= y \quad x > y \quad x >= y && \quad (Relacional)
+  \x -> y && \quad (Lambda)
+  f x y && \quad (Aplicação)
+\end{align}
+          </h4>
+        </section>
+
+        <section>
+          <h2>Outras PLs: Python</h2>
+          <br>
+          <h4>
+\begin{align}
+  5 \quad 5.20 && \quad (Valores numéricos)
+  x + y \quad x - y \quad x * y \quad x / y \quad x % y && \quad (Aritmética)
+  x == y \quad x != y \quad x < y \quad x <= y \quad x > y \quad x >= y && \quad (Relacional)
+  {\bf lambda} \, x: y && \quad (Lambda)
+  f(x)(y) && \quad (Aplicação)
+\end{align}
+          </h4>
+        </section>
+
+        <section>
+          <h2>Outras PLs: Clojure</h2>
+          <br>
+          <h4>
+\begin{align}
+  5 \quad 5.20 && \quad (Valores numéricos)
+  (+ x y) \quad (- x y) \quad (* x y) \quad (/ x y) \quad ({\bf mod} \, x y) && \quad (Aritmética)
+  (= x y) \quad ({\bf not} \, (= x y)) \quad (< x y) \quad (<= x y) \quad (> x y) \quad (>= x y) && \quad (Relacional)
+  (fn [x] y) && \quad (Lambda)
+  ((f x) y) && \quad (Aplicação)
+\end{align}
+          </h4>
+        </section>
+
+        <section>
+          <h2>Outras PLs: Java 7</h2>
+          <br>
+          <pre><code class="java">interface Function&lt;T, S&gt; {
+  S apply(T x);
+}
+final Function&lt;int, int&gt; double = new Function<>() {
+  int apply(int x){
+    return x * 2;
+  }
+};</code></pre>
+        </section>
+        
+        <section>
+          <h4 class="fading regular">Wrapping up!</h4>
+          <br><br><br><br>
+          <h1>Questions?</h1>
+          <br><br><br>
+          <p class="footnote">
+            Quildreen Motta, <br>
+            <a href="http://github.com/robotlolita">@robotlolita</a>
+          </p>
+        </section>
+      </div>
+    </div>
+
+    <script src="reveal.js/lib/js/head.min.js"></script>
+    <script src="reveal.js/js/reveal.min.js"></script>
+
+    <script>
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'linear',
+        backgroundTransition: 'slide',
+
+        math: {
+          mathjax: 'http://cdn.mathjax.org/mathjax/latest/MathJax.js',
+          config: 'TeX-MML-AM_HTMLorMML'
+        },
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() {return !!document.body.classList; } },
+          { src: 'reveal.js/plugin/math/math.js', async: true }
+        ]
+      });
+    </script>
+
+    <!-- controldeck.js -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/controldeck-slides.js"></script>
+
+  </body>
+</html>
