@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Tipos e Polimorfismo Paramétrico</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="reveal.js/css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+      }
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="reveal.js/lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div style="display: none">
+$
+  \(\require{color}\)
+  \definecolor{blue}{RGB}{119,158,203}
+  \definecolor{green}{RGB}{119,221,119}
+  \definecolor{red}{RGB}{255,105,97}
+$
+    </div>
+
+    <div id="presentation" class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        <section>
+          <h2>2. Tipos <br>&amp;</br> Polimorfismo Paramétrico</h2>
+          <h4 class="fading regular">( Uma framework para entender o código )</h4>
+        </section>
+
+        <section>
+          <h4 class="regular fading">Se funções podem receber qualquer parâmetro,<br>e combinar de qualquer forma</h4>
+          <h2 class="regular fading">como saber<br>qual combinação é válida?</h2>
+        </section>
+
+        <section>
+          <h2>Usando tipos!</h2>
+        </section>
+        
+        <section>
+          <h3>A linguagem que usamos não é tipada</h3>
+          <h4 class="regular fading">Mas ainda é possível pensar em tipos como um framework para entender o código</h4>
+        </section>
+
+        <section>
+          <h2>O que são tipos?</h2>
+          <br>
+          <ul>
+            <li>Uma categorização de um valor
+            <li>Uma afirmação lógica sobre uma expressão
+          </ul>
+        </section>
+        
+        <section>
+          <h2>
+        </section>
+        
+        <section>
+          <h4 class="fading regular">Wrapping up!</h4>
+          <br><br><br><br>
+          <h1>Questions?</h1>
+          <br><br><br>
+          <p class="footnote">
+            Quildreen Motta, <br>
+            <a href="http://github.com/robotlolita">@robotlolita</a>
+          </p>
+        </section>
+      </div>
+    </div>
+
+    <script src="reveal.js/lib/js/head.min.js"></script>
+    <script src="reveal.js/js/reveal.min.js"></script>
+
+    <script>
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'linear',
+        backgroundTransition: 'slide',
+
+        math: {
+          mathjax: 'http://cdn.mathjax.org/mathjax/latest/MathJax.js',
+          config: 'TeX-MML-AM_HTMLorMML'
+        },
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() {return !!document.body.classList; } },
+          { src: 'reveal.js/plugin/math/math.js', async: true }
+        ]
+      });
+    </script>
+
+    <!-- controldeck.js -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/controldeck-slides.js"></script>
+
+  </body>
+</html>
