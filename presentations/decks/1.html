@@ -115,7 +115,7 @@ let y = x || !false
           <br>
           <h4>
 \begin{equation}
-  \frac{ true   \, \&\& \, false }{ true   } \quad
+  \frac{ true   \, \&\& \, false }{ false  } \quad
   \frac{ true   \, \&\& \, \alpha}{ \alpha } \quad
   \frac{ \alpha \, \&\& \, true  }{ \alpha }
 \end{equation}
@@ -240,8 +240,8 @@ let y = x || !false
           <br>
           <h4>
 \begin{equation}
-  \frac{ true  \, \&\& \, false }{ true  } \quad
-  \frac{ false \, \&\& \, true  }{ true  } \quad
+  \frac{ true  \, \&\& \, false }{ false } \quad
+  \frac{ false \, \&\& \, true  }{ false } \quad
   \frac{ true  \, \&\& \, true  }{ true  } \quad
   \frac{ false \, \&\& \, false }{ false }
 \end{equation}
