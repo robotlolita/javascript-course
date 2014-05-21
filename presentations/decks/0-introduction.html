@@ -83,6 +83,170 @@
           </ul>
         </section>
         <section>
+          <h3 class="fading">Problema: <strong>ordenar uma lista</strong></h3>
+          <br>
+          <pre><code class="javascript smaller">
+function sort(xs) {
+  var done = false;
+  while (!done) {
+    done = true;
+    for (var i = 1; i < xs.length; i++) {
+      if (xs[i-1] > xs[i]) {
+        done = false;
+        [xs[i-1], xs[i]] = [xs[i], xs[i-1]]
+      }
+    }
+  }
+  return xs
+}
+          </code></pre>
+        </section>
+        <section>
+          <h3 class="fading">Problema: <strong>ordenar uma lista</strong></h3>
+          <br>
+          <pre><code class="haskell">
+sort []       = []
+sort (x : xs) = (sort menoresQueX) ++ [x] ++ (sort maioresQueX)
+              where
+                menoresQueX = [ y <- xs, y < x ]
+                maioresQueX = [ y <- xs, y > x ]
+          </code></pre>
+        </section>
+        <section>
+          <h3 class="fading">Problema: <strong>parsing</strong></h3>
+          <br>
+          <pre><code class="vala smaller">
+def parse(data:FileStream, out ast:AST)
+  var tk    = token.NONE // current token
+  var c     = data.EOF   // current read character
+  var node  = new ASTNode(tk, 1)
+  link:ASTNode = null
+  
+  ast = new AST
+  while (c = data.getc()) != data.EOF
+    if (tk = get_token(c)) != token.NONE
+      if tk == node.token_ \
+         and (tk >= token.NEXT_CELL and tk <= token.DEC)
+        node.times++
+      else
+        add(ast, ref node, ref link)
+        node = new ASTNode(tk, 1)
+      node.token_ = tk
+  add(ast, ref node, ref link)
+          </code></pre>
+        </section>
+        <section>
+          <h3 class="fading">Problema: <strong>parsing</strong></h3>
+          <br>
+          <pre><code class="scala smaller">
+ometa NaiveLispParser {
+  fromTo :x :y = seq(x) (~seq(y) char*) seq(y),
+  space        = ^space | fromTo(';', '\n'),
+  symbol       = '+' | '=' | '-' | '_' | '*' | '%'
+               | '!' | '/' | '^' | '&gt;' | '<',
+  idChars      = symbol | letterOrDigit,
+  
+  nil     = spaces "nil"                       -&gt; #nil,
+  id      = spaces idChars+:id                 -&gt; [#id,  id.join('')],
+  num     = spaces digit+:d                    -&gt; [#num, Number(d.join(''))],
+  funcall = "(" expr:hd (spaces expr)*:tl ")"  -&gt; [hd,   tl],
+ 
+  expr    = funcall | num | id
+}
+          </code></pre>
+        </section>
+        <section>
+          <h3 class="fading">Problema: <strong>interface interativa</strong></h3>
+          <br>
+          <pre><code class="javascript smaller">
+var texto = ''
+document.addEventListener('keypress', function(ev) {
+  ev.preventDefault()
+  texto += String.fromCharCode(ev.keyCode)
+  var original = document.querySelector('#original')
+  limpa(original)
+  original.appendChild(document.createTextNode("You typed: " + texto))
+  var invertido = document.querySelector('#invertido')
+  limpa(invertido)
+  invertido.appendChild(
+    document.createTextNode("I'll show you: " + texto.split('').reverse().join(''))
+  )                 
+})
+
+function limpa(a) {
+  while(a.childNodes.length > 0) a.removeChild(a.firstChild)
+}
+          </code></pre>
+        </section>
+        <section>
+          <h3 class="fading">Problema: <strong>interface interativa</strong></h3>
+          <br>
+          <pre><code class="elm smaller">
+import Char
+import Keyboard
+import String
+ 
+stringTogether char oldText = oldText ++ toString char
+toString char = String.cons (Char.fromCode char) ""
+
+typed text       = plainText "You typed: " `beside` asText text
+transformed text = plainText "I'll show you: "
+                   `beside` (asText . String.reverse <| text) 
+
+display text = flow down <| [ (typed text)
+                            , (transformed text) ]
+
+main = display <~ foldp stringTogether "" Keyboard.lastPressed
+          </code></pre>
+        </section>
+        <section>
+          <h3 class="fading">Problema: <strong>serviço HTTP</strong></h3>
+          <br>
+          <pre><code class="java smaller">package something;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.annotation.WebServlet;
+ 
+@WebServlet("/*")
+public class FeedServlet extends HttpServlet {
+  public void doGet(HttpServletRequest req, HttpServletResponse res) {
+ 
+    String URLpattern = "^/([^/]+)/?$"
+    if (req.getPathInfo().matches(URLpattern)) {
+      res.setStatus(HttpServletResponse.SC_OK);
+      res.addHeader("Content-Type", "text/html; charset=utf-8");
+      String name = req.getPathInfo().substring(1);
+      res.getWriter().write(...); // You'd have this in a separate layer, e.g.: JSP
+    } else {
+      res.setStatus(HttpServletResponse.SC_NOT_FOUND)
+  }
+}
+          </code></pre>
+        </section>
+        <section>
+          <h3 class="fading">Problema: <strong>serviço HTTP</strong></h3>
+          <br>
+          <pre><code class="haskell smaller">
+let hello = |name| =&gt;
+  &lt;html&gt;
+    &lt;head&gt;
+      &lt;title&gt;"Hello, " name&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+      &lt;h1&gt;"Hello, " name&lt;/h1&gt;
+    &lt;/body&gt;
+  &lt;/html&gt;
+ 
+`/:name get: |req, name| =>
+  Headers:
+    Status: 200
+    Content-Type: "text/html" Charset: "utf-8";
+  Body: hello name
+  
+          </code></pre>
+        </section>
+        <section>
           <h2>Foco: programação funcional</h2>
           <ul>
             <li>Simplicidade
