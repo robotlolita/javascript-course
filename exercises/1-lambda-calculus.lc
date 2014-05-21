@@ -1,0 +1,110 @@
+// (1) Funções de múltiplos parâmetros
+// =====================================================================
+//
+// Cálculo Lambda é baseado na idéia de que toda função recebe apenas
+// um argumento. Mas é possível escrever funções que recebem mais de
+// um argumento utilizando um conceito conhecido como Currying, que é
+// básicamente uma seqüência de funções unárias.
+// 
+// Demonstre como esse conceito pode ser aplicado escrevendo uma
+// função que computa a soma de dois números:
+
+// soma :: Número → Número → Número
+let soma = x -> ???
+
+law prop_soma(x, y): soma(x)(y) <=> x + y
+
+// Demonstre como esse conceito pode ser aplicado em funções de mais
+// de dois argumentos escrevendo uma função que verifica se um
+// argumento está entre dois números:
+
+// entreXeY :: Número → Número → Número → Número
+let entreXeY = x -> ???
+
+law prop_entreXeY(x, y, z): entreXeY(x)(y)(z) <=> z >= x && z <= y
+
+
+// (2) Especialização parcial de uma função
+// =====================================================================
+//
+// Através de um conceito conhecido como Partial Application, é possível
+// especificar, gradualmente, os argumentos de uma função. Dessa forma,
+// é possível criar variações especializadas de uma função de maneira
+// simples.
+//
+// Por exemplo, considere a função `maiorQue(x, y) = x > y`, através desse
+// conceito é possível criar uma nova função que "fixa" o valor de `x`,
+// sendo necessário passar apenas o argumento `y` mais tarde.
+//
+// Demonstre como esse conceito pode ser aplicado escrevendo uma função
+// que multiplica dois números, e então especializando um dos argumentos
+// desta função para o número 5.
+
+// multiplica :: Número → Número → Número
+let multiplica = x -> ???
+
+// multiplicaPor5 :: Número → Número
+let multiplicaPor5 = multiplica(5)
+
+law prop_multiplica(x): multiplicaPor5(x) <=> x * 5
+
+
+// (3) Combinadores
+// =====================================================================
+//
+// Combinadores são funções que realizam computações utilizando apenas
+// os parâmetros passados para elas. Por exemplo, a seguinte função é
+// um combinador:
+//
+//     apply2(f, x, y) = f(x)(y)
+//
+// Mas essa função não é:
+//
+//     soma(x, y) = x + y
+//
+// Na função `soma`, o operador `+` é utilizado na computação, mas não
+// é um dos parâmetros que a função soma recebe.
+//
+// Combinadores são especialmente importantes para criar funcionalidades
+// maiores em termos de funcionalidades menores, reduzindo a complexidade
+// do programa todo.
+//
+// Sabendo disso, descreva um combinador que recebe dois parâmetros e
+// sempre retorna o primeiro deles:
+
+// contante :: a → b → a
+let constante = x -> ???
+
+law prop_constante(x, y): constante(x)(y) <=> x
+
+
+// (4) Funções de alta-ordem
+// =====================================================================
+//
+// Função de alta-ordem é o nome dado para uma função que abstrai outras
+// funções, seja recebendo uma função como parâmetro, ou retornando
+// uma função como resultado. Esse tipo de função é um dos recursos mais
+// importantes para generalização e abstração de códigos, permitindo que
+// um programa seja mais conciso, mais fácil de compreender e mais
+// flexível.
+//
+// Uma das funções de alta-ordem mais comuns é a função que combina duas
+// funções para formar uma terceira função, que aplica essas duas funções a um
+// valor. Descreva este combinador, que recebe duas funções (`f` e `g`) e um
+// argumento (`x`), e aplica `g` a `x`, e `f` ao resultado dessa aplicação:
+
+// combina :: (b → c) → (a → b) → a → c
+let combina = x -> ???
+
+law prop_combina(f, g, x): combina(f)(g)(x) <=> _compose(f, g, x)
+
+
+// Descreva uma função de alta ordem que recebe uma função (`f`) e dois
+// argumentos (`x` e `y`), então executa `f` com os argumentos invertidos:
+
+// inverte :: (a → b → c) → b → a → c
+let inverte = x -> ???
+
+law prop_inverte(f, x, y): inverte(f)(x)(y) <=> _flip(f, x, y)
+
+
