@@ -107,8 +107,8 @@ $
           <h4>$ \forall a. \forall b. \forall c. (b \rightarrow c) \rightarrow (a \rightarrow b) \rightarrow a \rightarrow c $</h4>
           <h4 class="fragment">
 \[
-  {\it f} :: \forall a. \forall b. a \rightarrow b
-  {\it g} :: \forall a. \forall b. a \rightarrow b
+  {\it f} :: \forall a. \forall b. a \rightarrow b \\
+  {\it g} :: \forall a. \forall b. a \rightarrow b \\
   {\it compose}(f, g, x) = ?
 \]
           </h4>
@@ -120,7 +120,9 @@ $
           <h2>Outras PLs: Java 5+</h2>
           <br>
           <pre><code class="java">
-<A, B, C> C compose(Function<B, C> f, Function<A, B> g, A x);
+&lt;A, B, C&gt; C compose( Function&lt;B, C&gt; f
+                   , Function&lt;A, B&gt; g
+                   , A x);
           </code></pre>
         </section>
 

@@ -156,10 +156,10 @@ $
   value ::= & {\bf true} \, | \, {\bf false} \, | \, {\it number} \, | \, {\it string} \\
   expr  ::= & {\it conditionalExpression}       & \quad (If) \\
           | & {\it logicalExpression}           & \quad (\&\&, ||, !) \\
-          | & {\it relationalExpression}        & \quad (===, !==, >, <, >=, <=) \\
-          | & {\it arithmeticExpression}        & \quad (+, -, *, /, %) \\
+          | & {\it relationalExpression}        & \quad (===, !==, &gt;, <, \geq, \leq) \\
+          | & {\it arithmeticExpression}        & \quad (+, -, *, /, \%) \\
           | & {\it expr} ( {\it expr} )         & \quad (Application) \\
-          | & {\it ident} {\bf ->) {\it expr}   & \quad (Lambda) \\
+          | & {\it ident} {\bf \rightarrow} {\it expr}   & \quad (Lambda) \\
           | & {\it ident} \\
           | & {\it value} \\
   stmt  ::= & {\bf let} \, {\it ident} \, {\bf =} \, {\it expr}  & \quad (Binding) \\
@@ -173,7 +173,7 @@ $
           <br>
           <h4>
 \[
-  {\bf let} \, {\it double} = x -> x * 2 \\
+  {\bf let} \, {\it double} = x \rightarrow x * 2 \\
   {\bf let} \, {\it main}   = {\it double}(2)
 \]
           </h4>
@@ -182,12 +182,14 @@ $
         <section>
           <h2>Currying</h2>
           <br>
-          <h4>$ {\bf let} \, {\it mean} = x -> (x + y) / 2 $</h4>
+          <h4>$ {\bf let} \, {\it mean} = x \rightarrow (x + y) / 2 $</h4>
           <h4 class="fragment">
-            $ {\bf let} \, {\it mean} = \color{red}x -> \color{green}y -> (\color{red}x\color{green} + y) / 2\color{black} $
+            $ {\bf let} \, {\it mean} = \color{red}x \rightarrow \color{green}y \rightarrow (\color{red}x\color{green} + y) / 2\color{black} $
           </h4>
           <h4 class="fragment">
-            $ {\bf let} \, {\it between} = \color{red}x -> \color{green}y -> \color{blue}z -> z >= \color{red}x\color{blue} && z <= \color{green}y\color{black} $
+            $ {\bf let} \, {\it between} = \color{red}x \rightarrow
+            \color{green}y \rightarrow \color{blue}z \rightarrow z \color{black} \geq
+            \color{red}x \color{black} \&\& \color{blue}z \color{black} \leq \color{green}y \color{black} $
           </h4>
         </section>
 
@@ -196,7 +198,7 @@ $
           <br>
           <h4>
 \[
-  {\bf let} \, {\it between} = \color{red}x -> \color{green}y -> \color{blue}z -> z >= \color{red}x\color{blue} && z <= \color{green}y\color{black} \\
+  {\bf let} \, {\it between} = \color{red}x \rightarrow \color{green}y \rightarrow \color{blue}z \rightarrow z \color{black} \geq \color{red}x\color{black} \&\& \color{blue}z \color{black} \leq \color{green}y\color{black} \\
   {\bf let} \, {\it entre0e10} = {\it between}(0)(10) \\ 
   \\
   {\it entre0e10}(1) \implies {\it true} \\
@@ -211,9 +213,9 @@ $
           <br>
           <h4>
 \[
-  {\bf let} \, {\it identidade} = x -> x         \\
-  {\bf let} \, {\it constante}  = x -> y -> x    \\
-  {\bf let} \, {\it apply}      = f -> x -> f(x) \\
+  {\bf let} \, {\it identidade} = x \rightarrow x         \\
+  {\bf let} \, {\it constante}  = x \rightarrow y \rightarrow x    \\
+  {\bf let} \, {\it apply}      = f \rightarrow x \rightarrow f(x) \\
   \\
   {\bf let} \, {\it sempre1} = {\it constante}(1) \\
   {\it sempre1}(3) \implies {\it 1}
@@ -226,17 +228,18 @@ $
           <h4 class="fading regular">( Funções que recebem funções como parâmetros )</h4>
           <br>
           <h4 class="regular">Situação: o dobro de um número mais 1</h4>
-          <h4 class="fragment">$ {\bf let} \, mais1 = x -> (x * 2) + 1 $</h4>
+          <h4 class="fragment">$ {\bf let} \, mais1 = x \rightarrow (x * 2) + 1 $</h4>
           <h4 class="fragment">
 \[
-  {\bf let} \, dobro      = x -> x * 2 \\
-  {\bf let} \, mais1      = x -> x + 1 \\
-  {\bf let} \, dobroMais1 = x -> mais1(dobro(x))
+  {\bf let} \, dobro      = x \rightarrow x * 2 \\
+  {\bf let} \, mais1      = x \rightarrow x + 1 \\
+  {\bf let} \, dobroMais1 = x \rightarrow mais1(dobro(x))
 \]
           </h4>
+          <br>
           <h4 class="fragment">
 \[
-  {\bf let} \, combina    = f -> g -> x -> f(g(x)) \\
+  {\bf let} \, combina    = f \rightarrow g \rightarrow x \rightarrow f(g(x)) \\
   {\bf let} \, dobroMais1 = combina(mais1)(dobro)
 \]
           </h4>
@@ -246,12 +249,12 @@ $
           <h2>Funções de Alta-Ordem</h2>
           <h4 class="regular">Situação: a função que você quer chamar existe, mas a ordem dos argumentos está errada</h4>
           <br>
-          <h4>$ {\bf let} maiorQue  = x -> y -> x > y</h4>
-          <h4>$ {\bf let} maiorQue5 = x -> maiorQue(x)(5)</h4>
+          <h4>$ {\bf let} \, maiorQue  = x \rightarrow y \rightarrow x > y $</h4>
+          <h4>$ {\bf let} \, maiorQue5 = x \rightarrow maiorQue(x)(5) $</h4>
           <br>
           <h4 class="fragment">
 \[
-  {\bf let} \, inverso  = f -> x -> y -> f(y)(x)
+  {\bf let} \, inverso  = f \rightarrow x \rightarrow y \rightarrow f(y)(x) \\
   {\bf let} \, maiorQue5 = inverso(maiorQue)(5)
 \]            
           </h4>
@@ -260,72 +263,62 @@ $
         <section>
           <h2>Outras PLs: JavaScript</h2>
           <br>
-          <h4>
-\begin{align}
-  5 \quad 5.20 && \quad (Valores numéricos)
-  x + y \quad x - y \quad x * y \quad x / y \quad x % y && \quad (Aritmética)
-  x === y \quad x !== y \quad x < y \quad x <= y \quad x > y \quad x >= y && \quad (Relacional)
-  function(x){ return y } && \quad (Lambda)
-  (x) => y  && \quad (Lambda ES6)
-  f(x)(y) && \quad (Aplicação)
-\end{align}
-          </h4>
+          <pre><code class="javascript">
+5 5.20
+x + y, x -y, x * y, x / y, x % y
+x === y, x !== y, x < y, x <= y, x &gt; y, x &gt;= y
+function(x){ return y }
+(x) => y
+f(x)(y)
+          </code></pre>
         </section>
 
         <section>
           <h2>Outras PLs: Java 8</h2>
           <br>
-          <h4>
-\begin{align}
-  5 \quad 5.20 && \quad (Valores numéricos)
-  x + y \quad x - y \quad x * y \quad x / y \quad x % y && \quad (Aritmética)
-  x == y \quad x != y \quad x < y \quad x <= y \quad x > y \quad x >= y && \quad (Relacional)
-  x -> y && \quad (Lambda)
-  f(x)(y) && \quad (Aplicação)
-\end{align}
-          </h4>
+          <pre><code class="java">
+5 5.20
+x + y, x -y, x * y, x / y, x % y
+x == y, x != y, x < y, x <= y, x &gt; y, x &gt;= y
+x -> y
+f(x)(y)
+          </code></pre>
         </section>
 
         <section>
           <h2>Outras PLs: Haskell</h2>
           <br>
-          <h4>
-\begin{align}
-  5 \quad 5.20 && \quad (Valores numéricos)
-  x + y \quad x - y \quad x * y \quad x / y \quad {\bf mod} \, x y && \quad (Aritmética)
-  x == y \quad x != y \quad x < y \quad x <= y \quad x > y \quad x >= y && \quad (Relacional)
-  \x -> y && \quad (Lambda)
-  f x y && \quad (Aplicação)
-\end{align}
-          </h4>
+          <pre><code class="haskell">
+5 5.20
+x + y, x -y, x * y, x / y, mod x y
+x == y, x != y, x < y, x <= y, x &gt; y, x &gt;= y
+\x -> y
+f x y
+          </code></pre>
         </section>
 
         <section>
           <h2>Outras PLs: Python</h2>
           <br>
-          <h4>
-\begin{align}
-  5 \quad 5.20 && \quad (Valores numéricos)
-  x + y \quad x - y \quad x * y \quad x / y \quad x % y && \quad (Aritmética)
-  x == y \quad x != y \quad x < y \quad x <= y \quad x > y \quad x >= y && \quad (Relacional)
-  {\bf lambda} \, x: y && \quad (Lambda)
-  f(x)(y) && \quad (Aplicação)
-\end{align}
-          </h4>
+          <pre><code class="python">
+5 5.20
+x + y, x -y, x * y, x / y, x % y
+x == y, x != y, x < y, x <= y, x &gt; y, x &gt;= y
+lambda x: y
+f(x)(y)
+          </code></pre>
         </section>
 
         <section>
           <h2>Outras PLs: Clojure</h2>
           <br>
-          <h4>
-\begin{align}
-  5 \quad 5.20 && \quad (Valores numéricos)
-  (+ x y) \quad (- x y) \quad (* x y) \quad (/ x y) \quad ({\bf mod} \, x y) && \quad (Aritmética)
-  (= x y) \quad ({\bf not} \, (= x y)) \quad (< x y) \quad (<= x y) \quad (> x y) \quad (>= x y) && \quad (Relacional)
-  (fn [x] y) && \quad (Lambda)
-  ((f x) y) && \quad (Aplicação)
-\end{align}
-          </h4>
+          <pre><code class="python">
+5 5.20
+(+ x y), (- x y), (* x y), (/ x y), (mod x y)
+(= x y), (not (= x y)), (< x y), (<= x y), (&gt; x y), (&gt;= x y)
+(fn [x] y)
+((f x) y)
+          </code></pre>
         </section>
 
         <section>
