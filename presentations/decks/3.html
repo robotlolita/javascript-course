@@ -115,6 +115,22 @@ $
           <h4 class="fragment">$ {\it compose}(f, g, x) = f(g(x)) $</h4>
 
         </section>
+
+        <section>
+          <h2>Outras PLs: Java 5+</h2>
+          <br>
+          <pre><code class="java">
+<A, B, C> C compose(Function<B, C> f, Function<A, B> g, A x);
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Outras PLs: Haskell</h2>
+          <br>
+          <pre><code class="haskell">
+compose :: (b -> c) -> (a -> b) -> a -> c
+          </code></pre>
+        </section>
         
         <section>
           <h4 class="fading regular">Wrapping up!</h4>
