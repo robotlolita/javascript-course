@@ -76,7 +76,44 @@ $
         </section>
         
         <section>
-          <h2>
+          <h2>Exemplos de tipos</h2>
+          <br>
+          <ul>
+            <li>Número
+            <li>Texto
+            <li>Booleano
+            <li>Natural
+          </ul>
+        </section>
+
+        <section>
+          <h2>Tipos como proposições</h2>
+          <br>
+          <h4>$ \forall a. \forall b. a \rightarrow b $</h4>
+        </section>
+
+        <section>
+          <h2>Polimorfismo paramétrico</h2>
+          <br>
+          <h4>$ \forall \color{red}a\color{black}. \forall \color{green}b\color{black}. \color{red}a\color{black} \rightarrow \color{red}a\color{black} \rightarrow \color{green}b\color{black} $</h4>
+          <h4 class="fragment">$ \forall \color{red}Número\color{black}. \forall \color{green}Número\color{black}. \color{red}Número\color{black} \rightarrow \color{red}Número\color{black} \rightarrow \color{green}Número\color{black} $</h4>
+          <h4 class="fragment">$ \forall \color{red}Número\color{black}. \forall \color{green}Texto\color{black}. \color{red}Número\color{black} \rightarrow \color{red}Número\color{black} \rightarrow \color{green}Texto\color{black} $</h4>
+        </section>
+
+        <section>
+          <h2>Polimorfismo paramétrico</h2>
+          <br>
+          <h4 class="regular fading">Quantas implementações existem da seguinte função?</h4>
+          <h4>$ \forall a. \forall b. \forall c. (b \rightarrow c) \rightarrow (a \rightarrow b) \rightarrow a \rightarrow c $</h4>
+          <h4 class="fragment">
+\[
+  {\it f} :: \forall a. \forall b. a \rightarrow b
+  {\it g} :: \forall a. \forall b. a \rightarrow b
+  {\it compose}(f, g, x) = ?
+\]
+          </h4>
+          <h4 class="fragment">$ {\it compose}(f, g, x) = f(g(x)) $</h4>
+
         </section>
         
         <section>
