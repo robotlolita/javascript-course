@@ -31,11 +31,11 @@ function Tuple(x, y) {
          , isEqual: function(a) { return a.x === this.x && a.y === this.y }}
 }
 
-function _compose(f, g, x){ return f(g(x)) }
-function _flip(f, x, y){ return f(y)(x) }
+function Compose(f){ return function(g){ return function(x){ return f(g(x)) }}}
+function Flip(f){ return function(x){ return function(y){ return f(y)(x) }}}
 function f(x){ return Tuple(0, x) }
 function g(x){ return Tuple(1, x) }
-function h(x, y){ return Tuple(x, y) }
+function h(x){ return function(y){ return Tuple(x, y) }}
 
 module.exports = spec('Lambda Calculus', function(it, spec) {
 
@@ -49,12 +49,12 @@ module.exports = spec('Lambda Calculus', function(it, spec) {
   })
 
   spec('(3) Combinadores', function(it) {
-    it('Constante', forAll(T.Any, T.Any).satisfy(prop_constante).asTest())
+    it('Constante', forAll(T.Num, T.Num).satisfy(prop_constante).asTest())
   })
 
   spec('(4) Funções de alta-ordem', function(it) {
-    it('Combina', forAll(T.Any).satisfy(prop_combina.bind(null, f, g)).asTest())
-    it('Inverte', forAll(T.Any, T.Any).satisfy(prop_inverte.bind(null, h)).asTest())
+    it('Combina', forAll(T.Num).satisfy(prop_combina.bind(null, f, g)).asTest())
+    it('Inverte', forAll(T.Num, T.Num).satisfy(prop_inverte.bind(null, h)).asTest())
   })
 
 })

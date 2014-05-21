@@ -25,7 +25,7 @@ var doc = [ 'jsm — A minimal multi-layered subset of JS for teaching.'
           , 'Usage:'
           , '  jsm repl [options]              # An interactive session'
           , '  jsm compile [options] <file>    # Compiles a file'
-          , '  jsm exercise <file>             # Runs the exercise <file>'
+          , '  jsm exercise [options] <file>   # Runs the exercise <file>'
           , '  jsm languages                   # Lists available languages'
           , '  jsm help                        # Shows this screen'
           , '  jsm version                     # Shows version number'
@@ -36,7 +36,7 @@ var doc = [ 'jsm — A minimal multi-layered subset of JS for teaching.'
           , '  -a, --ast            Displays a JSON of the AST of a program.'
           , '  -o, --output=FILE    Outputs to FILE instead of stdout.'
           , '  -j, --json           Outputs JS AST as JSON.'
-          , '  --print-compiled     Displays the compiled code in the REPL.'
+          , '  --debug              Displays some debug information.'
           ].join('\n')
 
 
@@ -113,9 +113,9 @@ void function main() {
   var source   = args.compile?  core.resolveFile(file, language)
                :                null
 
-  ; args.repl?            core.repl(language, language.state(), args['--print-compiled'])
+  ; args.repl?            core.repl(language, language.state(), args['--debug'])
   : args.languages?       show(listLanguages())
-  : args.exercise?        exercises.run(args['<file>']).otherwise(die)
+  : args.exercise?        exercises.run(args['<file>'], args['--debug']).otherwise(die)
   : args.help?            show(doc)
   : args.version?         show('jsm version ' + pkg.version)
   : args['--ast']?        output(toJSON(source.ast()))
