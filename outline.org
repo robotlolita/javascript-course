@@ -19,9 +19,28 @@
 *** Currying e partial application
 *** Composição de funções e modularização
 *** Funções de alta-ordem
-** Recursive data types
-** Generalised recursion
+** Types and Parametric polymorphism
+*** Reasoning about types
+*** Types as propositions
+** Recursive data types and ADTs
+*** Sum types and Product types
+*** Encoding list as an ADT
+*** Inductive operations on List
+** Recursion schemes
+*** Recursion
+*** Folds
+*** Co-recursion
+*** Unfolds
 ** Non-blocking concurrency and CPS
+*** Continuations
+*** Futures as placeholders
+*** Streams as values over time
 ** Category Theory
+*** Monads
+*** Applicatives
+*** Functors
+*** Semigroups
+*** Monoids
+*** IO containers
 ** Prototypical OO
 ** Optimisations
