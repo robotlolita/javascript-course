@@ -324,14 +324,20 @@ f(x)(y)
         <section>
           <h2>Outras PLs: Java 7</h2>
           <br>
-          <pre><code class="java">interface Function&lt;T, S&gt; {
+          <pre><code class="java smaller">
+interface Function&lt;T, S&gt; {
   S apply(T x);
 }
-final Function&lt;int, int&gt; double = new Function<>() {
-  int apply(int x){
-    return x * 2;
+final Function&lt;int, Function&lt;int, int&gt;&gt; maiorQue = new Function<>() {
+  Function&lt;int, int&gt; apply(int x){
+    return new Function<>() {
+      int apply(int y) {
+        return x > y;
+      }
+    };
   }
-};</code></pre>
+};
+          </code></pre>
         </section>
         
         <section>
