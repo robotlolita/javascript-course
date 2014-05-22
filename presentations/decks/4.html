@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Estruturas indutivas e Esquemas de recursão</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="reveal.js/css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+      }
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="reveal.js/lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div style="display: none">
+$
+  \(\require{color}\)
+  \definecolor{blue}{RGB}{119,158,203}
+  \definecolor{green}{RGB}{3,192,60}
+  \definecolor{red}{RGB}{255,105,97}
+$
+    </div>
+
+    <div id="presentation" class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        <section>
+          <h2>Estruturas Indutivas<br>&<br>Esquemas de Recursão</h2>
+          <h4 class="fading regular">(Simplificando computações em estruturas complexas)</h4>
+        </section>
+        <section>
+          <h3 class="fading regular">50% da computação é</h3>
+          <h2>Modelagem de Dados</h2>
+          <br>
+          <h3 class="fragment fading regular">
+            Mas <br>
+            <strong>a maioria das linguagens</strong><br>
+            não suporta isso
+          </h3>
+        </section>
+        <section>
+          <h3>Tradeoffs em modelagem de dados</h3>
+          <br>
+          <ul>
+            <li>Eficiência de espaço
+            <li>Eficiência de performance
+            <li><div class="fragment grow">Eficiência de uso</div>
+          </ul>
+        </section>
+        <section>
+          <h4 class="fading regular">Em outras palavras</h4>
+          <h3>Vamos modelar dados de acordo com seu uso</h3>
+        </section>
+        <section>
+          <h3>Modelagem de dados eficiente</h3>
+          <ul>
+            <li>O tipo de dados que precisa ser armazenado
+            <li>Como esses dados serão acessados
+            <li>As operações que precisam ser executadas nesses dados
+          </ul>
+        </section>
+        <section>
+          <h3>Tipos de dados</h3>
+          <ul>
+            <li>Scalar        (Número, Texto, ...)
+            <li>Union types   (Nullable types)
+            <li><div class="fragment grow" data-fragment-index="1">Product types (Tuples, Records)</div>
+            <li><div class="fragment grow" data-fragment-index="1">Sum types     (Listas, Option[T])</div>
+          </ul>
+        </section>
+        <section>
+          <h3>Tipos de dados: Scalar</h3>
+          <h4 class="fading regular">( Uma unidade atômica de dado )</h4>
+        </section>
+        <section>
+          <h3>Tipos de dados: Union Types</h3>
+          <h4 class="fading regular">( Um valor com mais de uma forma, sem distinção )</h4>
+          <br>
+          <h4>
+\begin{align}
+  {\bf type} \, Nullable \alpha = & \alpha \vee Null   & (null, Object, ...) \\
+  {\bf type} \, TextoOuNumero   = & Texto \vee Número  & (1, “foo”)
+\end{align}
+        </section>
+        <section>
+          <h3>Tipos de dados: Product types</h3>
+          <h4 class="fading regular">( Uma coleção de dados )</h4>
+          <br>
+          <ul>
+            <li>Uma forma de armazenar cada componente da coleção
+            <li>Uma forma de acessar cada componente da coleção
+          </ul>
+        </section>
+        <section>
+          <h4 class="fading regular">Tipos de dados: Product types</h3>
+          <h3 class="fading">Problema: <strong>descrever uma unidade</strong></h3>
+          <br>
+          <h4>$ Gravidade = \color{blue}9,8\color{green} m/s\color{black}; \quad Tamanho = \color{blue}1,5\color{green} m\color{black}; $</h4>
+          <h4 class="fragment">$ Gravidade = (\color{blue}9,8\color{black}; \color{green}“m/s”\color{black}); \quad Tamanho = (\color{blue}1,5\color{black}; \color{green}“m”\color{black}) $</h4>
+          <h4 class="fragment">$ primeiro(Gravidade) \implies \color{blue}9,8\color{black} \\
+                                 segundo(Tamanho) \implies \color{green}“m”\color{black} $</h4>
+        </section>
+        <section>
+          <h4 class="fading regular">Tipos de dados: Product types</h4>
+          <h3 class="fading">Problema: <strong>descrever uma pessoa</strong></h3>
+          <br>
+          <h4>
+\[
+  Pessoa = \{ nome: \color{green}“Alice”\color{black}, \,  idade: \color{blue}8\color{black} \} \\
+  nome(Pessoa) \implies \color{green}“Alice”\color{black} \\
+  idade(Pessoa) \implies \color{green}8\color{black}
+\]
+          </h4>
+        </section>
+        
+
+
+        <section>
+          <h4 class="fading regular">Wrapping up!</h4>
+          <br><br><br><br>
+          <h1>Questions?</h1>
+          <br><br><br>
+          <p class="footnote">
+            Quildreen Motta, <br>
+            <a href="http://github.com/robotlolita">@robotlolita</a>
+          </p>
+        </section>
+      </div>
+    </div>
+
+    <script src="reveal.js/lib/js/head.min.js"></script>
+    <script src="reveal.js/js/reveal.min.js"></script>
+
+    <script>
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'linear',
+        backgroundTransition: 'slide',
+
+        math: {
+          mathjax: 'http://cdn.mathjax.org/mathjax/latest/MathJax.js',
+          config: 'TeX-MML-AM_HTMLorMML'
+        },
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() {return !!document.body.classList; } },
+          { src: 'reveal.js/plugin/math/math.js', async: true }
+        ]
+      });
+    </script>
+
+    <!-- controldeck.js -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/controldeck-slides.js"></script>
+
+  </body>
+</html>
