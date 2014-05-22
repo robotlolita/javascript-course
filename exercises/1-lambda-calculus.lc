@@ -38,7 +38,7 @@ let entreXeY = x -> ???
 
 // multiplica :: Número → Número → Número
 let multiplica = x -> ???
-
+let multiplicaPor5 = multiplica(5)
 
 // (3) Combinadores
 // =====================================================================

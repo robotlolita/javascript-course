@@ -63,7 +63,7 @@ module.exports = spec('Lambda Calculus', function(it, spec) {
 
   spec('(2) Especialização parcial de uma função', function(it) {
     it('Multiplicação', forAll(T.Num).satisfy(function(a) {
-                          return !!(multiplica(a) => a * 5)
+                          return !!(multiplicaPor5(a) => a * 5)
                         }).asTest())
   })
 
