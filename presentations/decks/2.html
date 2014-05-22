@@ -268,7 +268,7 @@ $
 x + y, x -y, x * y, x / y, x % y
 x === y, x !== y, x < y, x <= y, x &gt; y, x &gt;= y
 function(x){ return y }
-(x) => y
+(x) => (y) => z
 f(x)(y)
           </code></pre>
         </section>
@@ -280,7 +280,7 @@ f(x)(y)
 5 5.20
 x + y, x -y, x * y, x / y, x % y
 x == y, x != y, x < y, x <= y, x &gt; y, x &gt;= y
-x -> y
+x -> y -> z
 f(x)(y)
           </code></pre>
         </section>
@@ -292,7 +292,7 @@ f(x)(y)
 5 5.20
 x + y, x -y, x * y, x / y, mod x y
 x == y, x != y, x < y, x <= y, x &gt; y, x &gt;= y
-\x -> y
+\x -> \y -> z
 f x y
           </code></pre>
         </section>
@@ -304,7 +304,7 @@ f x y
 5 5.20
 x + y, x -y, x * y, x / y, x % y
 x == y, x != y, x < y, x <= y, x &gt; y, x &gt;= y
-lambda x: y
+lambda x: lambda y: z
 f(x)(y)
           </code></pre>
         </section>
@@ -316,7 +316,7 @@ f(x)(y)
 5 5.20
 (+ x y), (- x y), (* x y), (/ x y), (mod x y)
 (= x y), (not (= x y)), (< x y), (<= x y), (&gt; x y), (&gt;= x y)
-(fn [x] y)
+(fn [x] (fn [y] z))
 ((f x) y)
           </code></pre>
         </section>
