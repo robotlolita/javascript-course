@@ -36,7 +36,7 @@ ometa Parser <: BaseLanguage {
        | expr:a ws "?" ws expr:b ws ":" ws expr:c -> [#If, a, b, c]
        | expr:a ws "&&" ws expr:b                 -> [#And, a, b]
        | expr:a ws "||" ws expr:b                 -> [#Or, a, b]
-       | '!' ws expr:a                            -> [#Not, a]
+       | "!" ws expr:a                            -> [#Not, a]
        | identifier:a
        | value,
 
