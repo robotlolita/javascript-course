@@ -81,7 +81,7 @@ ometa BaseLanguage {
   testStmt     = lawConstruct | statement,
   testProgram  = (ws testStmt)*:xs ws eof -> [#Program, xs],
 
-  lawConstruct = keyword('law') ws identifier:a ws lawArgs:bs ws ':' ws lawBody:c  -> [#Law, a, bs, c],
+  lawConstruct = keyword('law') ws identifier:a ws lawArgs:bs ws ':' ws lawBody:c  -> [#Law, [a[0], '$law$' + a[1]], bs, c],
   lawBody      = bottom
                | expr:a ws "<=>" ws expr:b                                         -> [#Equiv, a, b],
   lawArgs      = '(' ws listOf(#identifier, ','):xs ws ')'                         -> xs

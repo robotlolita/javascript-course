@@ -29,19 +29,19 @@ var T      = claire.data
 module.exports = spec('Boolean Logic', function(it, spec) {
 
   spec('(1) Propriedades das definições dos operadores lógicos', function(it) {
-    it('Conjunção', forAll(T.Bool, T.Bool).satisfy(conjunction).asTest())
-    it('Disjunção', forAll(T.Bool, T.Bool).satisfy(disjunction).asTest())
-    it('Negação',   forAll(T.Bool).satisfy(negation).asTest())
+    it('Conjunção', forAll(T.Bool, T.Bool).satisfy($law$conjunction).asTest())
+    it('Disjunção', forAll(T.Bool, T.Bool).satisfy($law$disjunction).asTest())
+    it('Negação',   forAll(T.Bool).satisfy($law$negation).asTest())
   })
 
   spec('(2) Lei de Identidade', function(it) {
-    it('Conjunção', forAll(T.Bool).satisfy(conjunction_identity).asTest())
-    it('Disjunção', forAll(T.Bool).satisfy(disjunction_identity).asTest())
+    it('Conjunção', forAll(T.Bool).satisfy($law$conjunction_identity).asTest())
+    it('Disjunção', forAll(T.Bool).satisfy($law$disjunction_identity).asTest())
   })
 
   spec('(3) Lei de Aniquilação', function(it) {
-    it('Conjunção', forAll(T.Bool).satisfy(conjunction_annihilation).asTest())
-    it('Disjunção', forAll(T.Bool).satisfy(disjunction_annihilation).asTest())
+    it('Conjunção', forAll(T.Bool).satisfy($law$conjunction_annihilation).asTest())
+    it('Disjunção', forAll(T.Bool).satisfy($law$disjunction_annihilation).asTest())
   })
 
 })

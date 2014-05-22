@@ -26,13 +26,26 @@ var claire  = require('claire')
 var forAll = claire.forAll
 var T      = claire.data
 
+function Set(a) {
+  return function(x){ return a === x }}
+
+function Uniao(s1){ return function(s2){
+  return function(x){ return s1(x) || s2(x) }}}
+
+function Intersecao(s1){ return function(s2) {
+  return function(x){ return s1(x) && s2(x) }}}
+
+function Adiciona(s){ return function(x) {
+  return Uniao(s, Set(x)) }}
+
+function Contem(s){
+  return function(x){ return s(x) }}
+
+
 function Tuple(x, y) {
-  return { 0: x, 1: y
-         , isEqual: function(a) { return a.x === this.x && a.y === this.y }}
+  return [x, y]
 }
 
-function Compose(f){ return function(g){ return function(x){ return f(g(x)) }}}
-function Flip(f){ return function(x){ return function(y){ return f(y)(x) }}}
 function f(x){ return Tuple(0, x) }
 function g(x){ return Tuple(1, x) }
 function h(x){ return function(y){ return Tuple(x, y) }}
@@ -40,21 +53,59 @@ function h(x){ return function(y){ return Tuple(x, y) }}
 module.exports = spec('Lambda Calculus', function(it, spec) {
 
   spec('(1) Funções de múltiplos parâmetros', function(it) {
-    it('Soma', forAll(T.Num, T.Num).satisfy(prop_soma).asTest())
-    it('Entre X e Y', forAll(T.Num, T.Num, T.Num).satisfy(prop_entreXeY).asTest())
+    it('Soma', forAll(T.Num, T.Num).satisfy(function(a, b) {
+                 return !!(soma(a)(b) => a + b)
+               }).asTest())
+    it('Entre X e Y', forAll(T.Num, T.Num, T.Num).satisfy(function(a, b, c) {
+                        return !!(entreXeY(a)(b)(c) => c >= a && c <= b)
+                      }).asTest())
   })
 
   spec('(2) Especialização parcial de uma função', function(it) {
-    it('Multiplicação', forAll(T.Num).satisfy(prop_multiplica).asTest())
+    it('Multiplicação', forAll(T.Num).satisfy(function(a) {
+                          return !!(multiplica(a) => a * 5)
+                        }).asTest())
   })
 
   spec('(3) Combinadores', function(it) {
-    it('Constante', forAll(T.Num, T.Num).satisfy(prop_constante).asTest())
+    it('Constante', forAll(T.Num, T.Num).satisfy(function(a, b) {
+                      return !!(constante(a)(b) => a)
+                    }).asTest())
   })
 
   spec('(4) Funções de alta-ordem', function(it) {
-    it('Combina', forAll(T.Num).satisfy(prop_combina.bind(null, f, g)).asTest())
-    it('Inverte', forAll(T.Num, T.Num).satisfy(prop_inverte.bind(null, h)).asTest())
+    it('Combina', forAll(T.Num).satisfy(function(a) {
+                    return !!(combina(f)(g)(a) => f(g(a)))
+                  }).asTest())
+    it('Inverte', forAll(T.Num, T.Num).satisfy(function(a, b) {
+                    return !!(inverte(h)(a)(b) => h(b)(a))
+                  }).asTest())
+  })
+
+  spec('(5) Usando funçõesp ara modelar dados', function(it) {
+    it('Contém', forAll(T.Num, T.Num).satisfy(function(x, y) {
+                   return !!(
+                     contem(Set(x))(x) => true,
+                     contem(Set(x))(y) => x === y
+                   )
+                 }).asTest())
+    it('União', forAll(T.Bool, T.Bool).satisfy(function(x, y) {
+                  return !!(
+                    uniao(Set(x))(Set(y))(x) => true,
+                    uniao(Set(x))(Set(y))(y) => true
+                  )
+                }).asTest())
+    it('Interseção', forAll(T.Bool, T.Bool).satisfy(function(x, y) {
+                       return !!(
+                         intersecao(Set(x))(Set(y))(x) => x === y
+                       )
+                     }).asTest())
+    it('Adiciona', forAll(T.Num, T.Num).satisfy(function(x, y) {
+                     return !!(
+                       adiciona(Set(x))(y)(x) => true,
+                       adiciona(Set(x))(y)(y) => true
+                     )
+                   }).asTest())
   })
 
 })

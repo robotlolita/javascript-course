@@ -12,16 +12,12 @@
 // soma :: Número → Número → Número
 let soma = x -> ???
 
-law prop_soma(x, y): soma(x)(y) <=> x + y
-
 // Demonstre como esse conceito pode ser aplicado em funções de mais
 // de dois argumentos escrevendo uma função que verifica se um
 // argumento está entre dois números:
 
 // entreXeY :: Número → Número → Número → Número
 let entreXeY = x -> ???
-
-law prop_entreXeY(x, y, z): entreXeY(x)(y)(z) <=> z >= x && z <= y
 
 
 // (2) Especialização parcial de uma função
@@ -42,10 +38,6 @@ law prop_entreXeY(x, y, z): entreXeY(x)(y)(z) <=> z >= x && z <= y
 
 // multiplica :: Número → Número → Número
 let multiplica = x -> ???
-
-law prop_multiplica(x): multiplicaPor5(x) where multiplicaPor5 = multiplica(5) end
-                        <=>
-                        x * 5
 
 
 // (3) Combinadores
@@ -74,8 +66,6 @@ law prop_multiplica(x): multiplicaPor5(x) where multiplicaPor5 = multiplica(5) e
 // contante :: a → b → a
 let constante = x -> ???
 
-law prop_constante(x, y): constante(x)(y) <=> x
-
 
 // (4) Funções de alta-ordem
 // =====================================================================
@@ -93,22 +83,59 @@ law prop_constante(x, y): constante(x)(y) <=> x
 // argumento (`x`), e aplica `g` a `x`, e `f` ao resultado dessa aplicação:
 
 // combina :: (b → c) → (a → b) → a → c
-let combina = x -> ???
-
-law prop_combina(f, g, x): combina(f)(g)(x) <=> Compose(f)(g)(x)
+let combina = f -> ???
 
 
 // Descreva uma função de alta ordem que recebe uma função (`f`) e dois
 // argumentos (`x` e `y`), então executa `f` com os argumentos invertidos:
 
 // inverte :: (a → b → c) → b → a → c
-let inverte = x -> ???
-
-law prop_inverte(f, x, y): inverte(f)(x)(y) <=> Flip(f)(x)(y)
+let inverte = f -> ???
 
 
 // (5) Usando funções para modelar dados
 // =====================================================================
 //
-// Cálculo Lambda é uma formulação fundamental da matemática, então pode
-// ser utilizada para 
+// Cálculo Lambda é uma formulação fundamental da matemática. Qualquer
+// estrutura de dados pode ser modelada em cima desse modelo, embora
+// a tradução geralmente não seja direta.
+//
+// Nesse exercício, Conjuntos devem ser modelados usando apenas funções,
+// e as operações comuns de teoria de conjuntos derivadas nesse modelo.
+//
+// Um conjunto é básicamente uma função do tipo `a → Bool`, isto é,
+// dado um elemento, a função diz se esse elemento está ou não no
+// conjunto.
+//
+// Por exemplo, um conjunto contendo apenas o número 10 seria:
+//
+//     let conjunto10 = x -> x === 10
+//
+// E um conjunto contendo os números 5 e 10 seria:
+//
+//     let conjunto5e10 = x -> x === 5 || x === 10
+
+// Escreva uma operação que, dado um conjunto e um elemento, verifique
+// se o elemento está no conjunto:
+
+// contem :: (a → Bool) → a → Bool
+let contem = s -> ???
+
+// Escreva uma operação que, dado dois conjuntos, retorne a união deles.
+// Isto é, um conjunto que contém elementos dos dois conjuntos:
+
+// uniao :: (a → Bool) → (a → Bool) → (a → Bool)
+let uniao = s -> ???
+
+// Escreva uma operação que, dado dois conjuntos, retorne a interseção deles.
+// Isto é, um conjunto que contém apenas os elementos que aparecem
+// nos dois conjuntos ao mesmo tempo:
+
+// intersecao :: (a → Bool) → (a → Bool) → (a → Bool)
+let intersecao = s -> ???
+
+// Escreva uma operação que, dado um conjunto e um elemento, adicione o
+// elemento ao conjunto:
+
+// adiciona :: (a → Bool) → a → (a → Bool)
+let adiciona = s -> ???
