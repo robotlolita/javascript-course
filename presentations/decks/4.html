@@ -149,13 +149,13 @@ $
           <h4 class="fading regular">Tipos de dados: Sum types</h4>
           <h3 class="fading">Problema: <strong>validar algo</strong></h3>
           <br>
-          <h4>$ {\bf data} \, Validação = {\bf Falha}(motivo) \quad | \quad {\bf Sucesso}(valor) $</h4>
+          <h4>$ {\bf data} \, Validação = {\bf Falha}(motivo) \quad | \quad {\bf Sucesso}(a, b, valor) $</h4>
           <br>
           <h4>
 \begin{align}
-  divisivel(x, y) = & \\
-         {\bf if}   & \,\, resto(x, y) = 0 \, \\
-         {\bf then} & \, Sucesso(x / y) \\
+  divisivel(x)(y) = & \\
+         {\bf if}   & \,\, resto(x)(y) = 0 \, \\
+         {\bf then} & \, Sucesso(x; y; x / y) \\
          {\bf else} & \, Falha(x \concat \text{“ não é divisível por ”} \concat y)
 \end{align}
           </h4>
@@ -168,9 +168,9 @@ $
           <br>
           <h4>
 \begin{align}
-  & {\bf match} \, divisivel(3, 2) \, {\bf with} \\
-    & \quad | \, {\bf Sucesso}(valor) \rightarrow \text{“3 dividido por 2 é ”} \concat valor \\
-    & \quad | \, {\bf Falha}(motivo)  \rightarrow motivo \\
+  & {\bf match} \, divisivel(3)(2) \, {\bf with} \\
+    & \quad | \, {\bf Sucesso}(a; b; valor) \rightarrow a \concat \text{“ dividido por ”} \concat b \concat \text{“ é ”} \concat valor \\
+    & \quad | \, {\bf Falha}(motivo)        \rightarrow motivo \\
   & {\bf end}
 \end{align}
           </h4>
