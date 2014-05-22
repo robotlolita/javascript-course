@@ -41,12 +41,11 @@ law prop_entreXeY(x, y, z): entreXeY(x)(y)(z) <=> z >= x && z <= y
 // desta função para o número 5.
 
 // multiplica :: Número → Número → Número
-let multiplica = x -> x
+let multiplica = x -> ???
 
-// multiplicaPor5 :: Número → Número
-let multiplicaPor5 = multiplica(5)
-
-law prop_multiplica(x): multiplicaPor5(x) <=> x * 5
+law prop_multiplica(x): multiplicaPor5(x) where multiplicaPor5 = multiplica(5) end
+                        <=>
+                        x * 5
 
 
 // (3) Combinadores
@@ -108,3 +107,8 @@ let inverte = x -> ???
 law prop_inverte(f, x, y): inverte(f)(x)(y) <=> Flip(f)(x)(y)
 
 
+// (5) Usando funções para modelar dados
+// =====================================================================
+//
+// Cálculo Lambda é uma formulação fundamental da matemática, então pode
+// ser utilizada para 

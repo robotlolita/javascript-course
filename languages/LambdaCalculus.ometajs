@@ -24,6 +24,9 @@ var _            = require('../lib/gen')
 var runtime      = require('./runtime/core')
 
 
+function first(as){ return as[0] }
+function last(as){ return as[as.length - 1] }
+
 exports.name  = 'Lambda Calculus'
 exports.state = function() {
   return runtime
@@ -38,7 +41,8 @@ ometa Parser <: BaseLanguage {
 
   lambda = identifier:a ws "->" ws expr:b -> [#Lambda, a, b],
   
-  expr = condExpr,
+  expr = expr:a ws "where" ws listOf(#assign, ","):bs "end" -> [#LetIn, bs, a]
+       | condExpr,
 
   condExpr = orExpr:a ( ws "?" ws condExpr:b ws ":" ws condExpr:c -> [#If, a, b, c]
                       | empty                                     -> a
@@ -80,11 +84,18 @@ ometa Parser <: BaseLanguage {
              | identifier
              | value,
 
+  assign = identifier:a ws "=" ws expr:b -> [a, b],
+
   statement = letConstruct
+            | expr:a -> [#StmtEx, a]
 }
 
 ometa Compiler <: BaseCompiler {
-  Let     cc:id cc:val   -> _.var(id, val),
+  Let     cc:id cc:val     -> _.var(id, val),
+  LetIn   [ccAsn*:xs] cc:e -> _.call(_.fn( null, xs.map(first)
+                                         , _.block([_.return(e)]), {})
+                                    , xs.map(last)),
+  StmtEx  cc:a           -> _.expr(a),
   If      cc:a cc:b cc:c -> _.cond(a, b, c),
   And     cc:a cc:b      -> _.and(a, b),
   Or      cc:a cc:b      -> _.or(a, b),
@@ -103,5 +114,7 @@ ometa Compiler <: BaseCompiler {
   Gt      cc:a cc:b      -> _.call(_.call(_.id('$gt'),  [a]), [b]),
   Gte     cc:a cc:b      -> _.call(_.call(_.id('$gte'), [a]), [b]),
   Eq      cc:a cc:b      -> _.eq(a, b),
-  Neq     cc:a cc:b      -> _.neq(a, b)
+  Neq     cc:a cc:b      -> _.neq(a, b),
+
+  ccAsn = [cc:a cc:b] -> [a, b]
 }

@@ -41,10 +41,12 @@ ometa Parser <: BaseLanguage {
        | value,
 
   statement = letConstruct
+            | expr:a -> [#StmtEx, a]
 }
 
 ometa Compiler <: BaseCompiler {
   Let     cc:id cc:val   -> _.var(id, val),
+  StmtEx  cc:a           -> _.expr(a),
   If      cc:a cc:b cc:c -> _.cond(a, b, c),
   And     cc:a cc:b      -> _.and(a, b),
   Or      cc:a cc:b      -> _.or(a, b),
