@@ -1,0 +1,37 @@
+// (1) Catamorfismos
+// =====================================================================
+//
+// Dada uma função com o seguinte tipo:
+//
+//     map :: (a → b) → Lista[a] → Lista[b]
+//
+// Escreva uma implementação para essa função. A função deve receber
+// como argumentos uma função que transforma um valor em outro, e 
+// uma lista de valores. Deve então retornar uma lista com todos os
+// valores transformados:
+
+data Lista = Nada
+           | Celula(item, resto)
+end
+
+let map = f -> xs -> ???
+
+
+// (2) Recursão
+// =====================================================================
+// 
+// Considere que uma linguagem aritimética possa ser definida através
+// dos seguintes casos:
+
+data Math = Add(a, b)           // Adição: a + b
+          | Sub(a, b)           // Subtração: a - b
+          | Mul(a, b)           // Multiplicação: a * b
+          | Num(a)              // Número: 2 (o caso base)
+end
+
+// Escreva uma função recursiva que recebe um valor do tipo Math
+// e calcula o resultado da expressão. Por exemplo:
+//
+//     calc(Add(Num(1), Sub(Num(3), Num(2)))) => 1 + (3 - 2) => 2
+
+let calc = expr -> ???

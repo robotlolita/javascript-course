@@ -81,7 +81,7 @@ ometa Parser <: BaseLanguage {
          | unExpr:a ws '.' ws identifier:b -> [#Member, a, b]
          | primExpr,
 
-  primExpr = primExpr:a ws '(' ws expr:b ws ')' -> [#App, a, b]
+  primExpr = primExpr:a ws '(' ws listOf(#expr, ','):bs ws ')' -> bs.reduce(function(x, b){ return [#App, x, b] }, a)
            | primExprHd,
 
   primExprHd = '(' ws expr:a ws ')' -> a

@@ -181,8 +181,8 @@ $
           <br>
           <h4>
 \begin{align}
-  1     > & 0 \\
-  n + 1 > & n
+  1     > & 0 & (\text{Base case}) \\
+  n + 1 > & n & (\text{Inductive step})
 \end{align}
           </h4>
         </section>
@@ -201,7 +201,7 @@ $
         <section>
           <h3 class="fading">Problema: <strong>Somar todos elementos</strong></h3>
           <br>
-          <h4>
+          <h4 class="fragment">
 \begin{align}
   & {\bf let} \, soma = xs \rightarrow {\bf match} \, xs \, {\bf with} \\
   & \quad | \, {\bf \text{Nada}} \Rightarrow 0 \\
@@ -209,11 +209,22 @@ $
   & {\bf end}
 \end{align}
           </h4>
+          <br>
+          <h4 class="fragment">
+\begin{align}
+  & soma(\text{Célula}(1, \text{Célula}(2, \text{Célula}(3, \text{Nada})))) \\
+  & 1 + soma(\text{Célula}(2, \text{Célula}(3, \text{Nada}))) \\
+  & 1 + (2 + soma(\text{Célula}(3, \text{Nada})))) \\
+  & 1 + (2 + (3 + soma(Nada))) \\
+  & 1 + (2 + (3 + 0)) \implies 6
+\end{align}
+          </h4>
+          
         </section>
         <section>
           <h3 class="fading">Problema: <strong>Inverter uma lista</strong></h3>
           <br>
-          <h4>
+          <h4 class="fragment">
 \begin{align}
   & {\bf let} \, inverte = xs \rightarrow {\bf match} \, xs \, {\bf with} \\
   & \quad | \, {\bf \text{Nada}} \Rightarrow Nada \\
@@ -221,11 +232,20 @@ $
   & {\bf end}
 \end{align}
           </h4>
+          <br>
+          <h4 class="fragment">
+\begin{align}
+  & inverte(1 :: 2 :: Nada) \\
+  & inverte(2 :: Nada) \concat 1 :: Nada \\
+  & inverte(Nada) \concat 2 :: Nada \concat 1 : Nada \\
+  & Nada \concat 2 :: Nada \concat 1 :: Nada \implies 2 :: 1 :: Nada
+\end{align}            
+          </h4>
         </section>
         <section>
           <h3 class="fading">Problema: <strong>Filtrar elementos</strong></h3>
           <br>
-          <h4>
+          <h4 class="fragment">
 \begin{align}
   & {\bf let} \, filtra = f \rightarrow xs \rightarrow {\bf match} \, xs \, {\bf with} \\
   & \quad | \, {\bf \text{Nada}} \Rightarrow Nada \\
@@ -234,8 +254,128 @@ $
   & {\bf end}
 \end{align}
           </h4>
+          <br>
+          <h4 class="fragment">
+\begin{align}
+  & filtra(x \rightarrow x > 1)(1 :: 2 :: Nada) \\
+  & filtra(x \rightarrow x > 1)(2 :: Nada) \\
+  & 2 : filtra(x \rightarrow x > 1)(Nada) \implies 2 :: Nada
+\end{align}
+          </h4>
         </section>
-
+        <section>
+          <h4 class="fading regular">Espera... essas funções são bem parecidas, não?</h4>
+          <h3>É quase um Ctrl+C, Ctrl+V</h3>
+        </section>
+        <section>
+          <h3>Catamorfismo</h3>
+          <h4 class="fading regular">( Uma transformação indutiva na estrutura )</h4>
+          <br>
+          <h4>
+\begin{align}
+  f(\text{Nada}) \rightarrow & \alpha \\
+  f(\text{Célula}(x, resto)) \rightarrow & x \oplus f(resto)
+\end{align}
+          </h4>
+        </section>
+        <section>
+          <h3>Catamorfismo, aka Fold</h3>
+          <br>
+          <h4>
+\begin{align}
+  & {\bf let} \, fold = f \rightarrow \alpha \rightarrow xs \rightarrow {\bf match} \, xs \, {\bf with} \\
+  & \quad | \, {\bf \text{Nada}} \Rightarrow \alpha \\
+  & \quad | \, {\bf \text{Célula}}(x, resto) \Rightarrow f(x, fold(f, \alpha, resto)) \\
+  & {\bf end}
+\end{align}
+          </h4>
+          <br>
+          <h4>
+\begin{align}
+  {\bf let} \, soma    & = fold(+)(0) \\
+  {\bf let} \, inverte & = fold(x \rightarrow xs \rightarrow xs \concat x::Nada)(Nada) \\
+  {\bf let} \, filter  & = f \rightarrow fold(x \rightarrow xs \rightarrow f(x)? x::xs : xs)(Nada)
+\end{align}
+          </h4>
+        </section>
+        <section>
+          <h3 class="fading">Problema: <strong>Números entre N e M</strong></h3>
+          <br>
+          <h4 class="fragment">
+\begin{align}
+  & {\bf let} \, range = n \rightarrow m \rightarrow \\
+  & \quad n > m ? \quad Nada \\
+  & \hspace{3.8em}: \quad \text{Célula}(n, range(n + 1, m)) \\
+\end{align}
+          </h4>
+          <h4 class="fragment">
+\begin{align}
+  & range(0, 3) \\
+  & 0 :: range(0 + 1, 3) \\
+  & 0 :: 1 :: range(1 + 1, 3) \\
+  & 0 :: 1 :: 2 :: range(2 + 1, 3) \\
+  & 0 :: 1 :: 2 :: 3 :: range(3 + 1, 3) \implies 0 :: 1 :: 2 :: 3 :: Nada
+\end{align}
+          </h4>
+        </section>
+        <section>
+          <h3 class="fading">Problema: <strong>Seqüência fibonacci até N</strong></h3>
+          <br>
+          <h4 class="fragment">
+\begin{align}
+  & {\bf let} \, fib = n \rightarrow cofib(0, 1, n) \\
+  & {\bf let} \, cofib = x \rightarrow y \rightarrow n \rightarrow \\
+  & \quad n === 0? \quad x :: Nada \\
+  & \hspace{5em} : \quad x :: cofib(y, x + y, n - 1)
+\end{align}
+          </h4>
+          <br>
+          <h4 class="fragment">
+\begin{align}
+  & fib(3) \implies cofib(0, 1, 3) \\
+  & cofib(0, 1, 3) \implies 0 :: cofib(1, 0+1, 3-1) \\
+  & 0 :: cofib(1,1,2) \implies 1 :: cofib(1,1+1,2-1) \\
+  & 0 :: 1 :: cofib(1,2,1) \implies 1 :: cofib(2, 1+2, 1-1) \\
+  & 0 :: 1 :: 1 :: cofib(2, 3, 0) \implies 2 :: Nada \\
+  & 0 :: 1 :: 1 :: 2 :: Nada
+\end{align}
+          </h4>
+        </section>
+        <section>
+          <h4 class="fading regular">Espera... essas funções são bem parecidas, não?</h4>
+          <h3>É quase um Ctrl+C, Ctrl+V</h3>
+        </section>
+        <section>
+          <h3>Anamorfismo</h3>
+          <h4 class="fading regular">( Constrói uma estrutura de forma indutiva )</h4>
+          <br>
+          <h4>
+\begin{align}
+  f(x) = {\bf if} \, p(x) \, {\bf then} & \, \text{Nada} \\
+                             {\bf else} & \, a :: f(b) \\
+                                        & {\bf where} \, a::b = g(x)
+\end{align}
+          </h4>
+        </section>
+        <section>
+          <h3>Anamorfismo, aka Unfold</h3>
+          <br>
+          <h4>
+\begin{align}
+  & {\bf let} \, unfold = f \rightarrow x \rightarrow {\bf match} \, f(x) \, {\bf with} \\
+  & \quad | \, \text{Nada} \Rightarrow Nada \\
+  & \quad | \, \{a, b\} \Rightarrow a :: unfold(f, b) \\
+  & {\bf end}
+\end{align}
+          </h4>
+          <br>
+          <h4>
+\begin{align}
+  {\bf let} \, range(n, m) & = unfold(x \rightarrow x > m? \text{Nada} : \{ x, x + 1 \})(n) \\
+\end{align}
+          </h4>
+        </section>
+        
         <section>
           <h4 class="fading regular">Wrapping up!</h4>
           <br><br><br><br>
