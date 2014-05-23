@@ -27,12 +27,15 @@ var stringify = require('escodegen').generate
  *
  * @summary [String]
  */
-var reserved = [ 'function'
+var reserved = [ 'where'
                , 'true'
                , 'false'
                , 'let'
                , 'law'
-               , 'satisfies'
+               , 'match'
+               , 'with'
+               , 'end'
+               , 'data'
                ]
 
 /**
@@ -52,11 +55,11 @@ ometa BaseLanguage {
   eof     = ?(this._offset >= this._source.length),
 
   // Identifiers
-  idStart    = letter,
+  idStart    = letter | '_',
   idRest     = letter | digit | '_',
   identifier = ws <idStart idRest*>:a ?(!isReserved(a)) -> [#Id, a],
 
-  letterOrDigit = letter | digit,
+  letterOrDigit = letter | '_' | digit,
   keyword :xs   = seq(xs) ~letterOrDigit  -> xs,
 
   bottom = "???" -> [#Bottom],

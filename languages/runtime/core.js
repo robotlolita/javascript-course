@@ -21,6 +21,7 @@
 
 var adt             = require('adt')
 var show            = require('util').inspect
+var deepEqual       = require('deep-equal')
 var internalClassOf = Function.call.bind({}.toString)
 
 function classOf(a) {
@@ -32,6 +33,17 @@ function typeCheck(expected, actual) {
     throw new TypeError('Expected a value of type ' + expected
                        + ', got ' + classOf(actual) + ': ' + show(actual))
 }
+
+exports.$eq = $eq
+function $eq(a){ return function(b) {
+  return a && a.equals?   a.equals(b)
+  :      /* otherwise */  a === b
+}}
+
+exports.$neq = $neq
+function $neq(a){ return function(b) {
+  return !$eq(a)(b)
+}}
 
 exports.$mul = $mul
 function $mul(a){ return function(b) {
@@ -95,6 +107,11 @@ function $gte(a){ return function(b) {
   typeCheck('Number', b)
   return a >= b
 }}
+
+exports.$matchesInterface = matchesInterface
+function matchesInterface(a, bs) {
+  return deepEqual(Object.keys(Object(a)).sort(), bs)
+}
 
 exports.$data = adt.data
 exports.$any  = adt.any

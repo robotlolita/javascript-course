@@ -37,7 +37,8 @@ ometa Parser <: BaseLanguage {
         | keyword('false') -> [#Lit, false]
         | number
         | string
-        | member
+        | tuple
+        | record
         | bottom,
 
   lambda = identifier:a ws "->" ws expr:b -> [#Lambda, a, b],
@@ -66,8 +67,9 @@ ometa Parser <: BaseLanguage {
           | relExpr:a ws ">=" ws addExpr:b -> [#Gte, a, b]
           | addExpr,
 
-  addExpr = addExpr:a ws "+" ws mulExpr:b -> [#Add, a, b]
-          | addExpr:a ws "-" ws mulExpr:b -> [#Sub, a, b]
+  addExpr = addExpr:a ws "+" ws mulExpr:b  -> [#Add, a, b]
+          | addExpr:a ws "++" ws mulExpr:b -> [#Concat, a, b]
+          | addExpr:a ws "-" ws mulExpr:b  -> [#Sub, a, b]
           | mulExpr,
 
   mulExpr = mulExpr:a ws "*" ws unExpr:b -> [#Mul, a, b]
@@ -76,6 +78,7 @@ ometa Parser <: BaseLanguage {
           | unExpr,
 
   unExpr = '!' ws unExpr:a -> [#Not, a]
+         | unExpr:a ws '.' ws identifier:b -> [#Member, a, b]
          | primExpr,
 
   primExpr = primExpr:a ws '(' ws expr:b ws ')' -> [#App, a, b]
@@ -92,18 +95,21 @@ ometa Parser <: BaseLanguage {
 
   recMapId = identifier:a ws "=" ws identifier:b -> [a, b],
 
-  matchCase = qualId:a ws '(' ws listOf(#identifier, ','):b ws ')' ws "->" ws expr:c    -> [#DataPatt, a, b, c]
-            | '(' listOf(#identifier, ','):a ws ')' ws "->" ws expr:b                   -> [#ProdPatt, a, b]
-            | '{' listOf(#recMapId, ','):a ws '}' ws "->" ws expr:b                     -> [#RecPatt, a, b]
-            | value:a ws "->" ws expr:b                                                 -> [#ValPatt, a, b]
-            | identifier:a "->" ws expr:b                                               -> [#NamePatt, a, b],
+  matchCase = qualId:a ws '(' ws listOf(#identifier, ','):b ws ')' ws "=>" ws expr:c    -> [#DataPatt, a, b, c]
+            | '{' listOf(#identifier, ','):a ws '}' ws "=>" ws expr:b                   -> [#ProdPatt, a, b]
+            | '{' listOf(#recMapId, ','):a ws '}' ws "=>" ws expr:b                     -> [#RecPatt, a, b]
+            | qualId:a ws "=>" ws expr:b                                                -> [#ValPatt, a, b]
+            | value:a ws "=>" ws expr:b                                                 -> [#ValPatt, a, b]
+            | identifier:a "=>" ws expr:b                                               -> [#NamePatt, a, b],
 
   qualId = identifier:a (ws '.' ws identifier)*:bs -> [#QualId, [a].concat(bs)],
-  member = identifier:a (ws '.' ws identifier)+:bs -> [#QualId, [a].concat(bs)],
 
   dataDecl = "data" ws identifier:a ws "=" ws listOf(#dataCase, '|'):bs ws "end" -> [#Data, a, bs],
   dataCase = identifier:a ws '(' ws listOf(#identifier, ','):bs ws ')'           -> [#Ctor, a, bs]
            | identifier:a                                                        -> [#NCtor, a],
+
+  tuple  = '{' ws listOf(#expr, ','):as ws '}'                                    -> [#Tuple, as],
+  record = '{' ws listOf(#assign, ','):as ws '}'                                  -> [#Record, as],
 
   statement = letConstruct
             | dataDecl
@@ -128,26 +134,30 @@ ometa Compiler <: BaseCompiler {
   Div     cc:a cc:b      -> _.call(_.call(_.id('$div'), [a]), [b]),
   Mod     cc:a cc:b      -> _.call(_.call(_.id('$mod'), [a]), [b]),
   Add     cc:a cc:b      -> _.call(_.call(_.id('$add'), [a]), [b]),
+  Concat  cc:a cc:b      -> _.methodCall(a, 'concat', [b]),
   Sub     cc:a cc:b      -> _.call(_.call(_.id('$sub'), [a]), [b]),
   Lt      cc:a cc:b      -> _.call(_.call(_.id('$lt'),  [a]), [b]),
   Lte     cc:a cc:b      -> _.call(_.call(_.id('$lte'), [a]), [b]),
   Gt      cc:a cc:b      -> _.call(_.call(_.id('$gt'),  [a]), [b]),
   Gte     cc:a cc:b      -> _.call(_.call(_.id('$gte'), [a]), [b]),
-  Eq      cc:a cc:b      -> _.eq(a, b),
-  Neq     cc:a cc:b      -> _.neq(a, b),
+  Eq      cc:a cc:b      -> _.call(_.call(_.id('$eq'), [a]), [b]),
+  Neq     cc:a cc:b      -> _.call(_.call(_.id('$neq'), [a]), [b]),
   QualId  [cc*:as]       -> _.qualId(as),
+  Member  cc:a cc:b      -> _.member(a, b, false),
   Ctor    cc:a [cc*:as]  -> [a, _.adtCase(as)],
   NCtor   cc:a           -> [a, _.lit(null)],
   Data    cc:a [cc*:as]  -> _.var(a, _.adt(as)),
   Match   cc:a [cc*:bs]  -> _.match(freshName(), a, bs),
+  Tuple   [cc*:as]       -> _.tuple(as),
+  Record  [ccAsn*:as]    -> _.record(as),
 
   NamePatt cc:a cc:b          -> [#NamePatt, a, b],
   ValPatt cc:a cc:b           -> [#ValPatt, a, b],
-  RecPatt                     -> [],
-  ProdPatt                    -> [],
+  RecPatt [ccAsn*:as] cc:b    -> [#RecPatt, as, b],
+  ProdPatt :as cc:b           -> [#ProdPatt, as, b],
   DataPatt cc:a [cc*:bs] cc:e -> [#DataPatt, a, bs, e],
 
-  ccAsn = [cc:a cc:b] -> [a, b]
+  ccAsn    = [cc:a cc:b] -> [a, b]
 }
 
 var names = 0;
