@@ -19,6 +19,7 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+var adt             = require('adt')
 var show            = require('util').inspect
 var internalClassOf = Function.call.bind({}.toString)
 
@@ -94,3 +95,6 @@ function $gte(a){ return function(b) {
   typeCheck('Number', b)
   return a >= b
 }}
+
+exports.$data = adt.data
+exports.$any  = adt.any

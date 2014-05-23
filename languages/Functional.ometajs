@@ -1,0 +1,154 @@
+// Copyright (c) 2014 Quildreen Motta <quildreen@gmail.com>
+//
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation files
+// (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge,
+// publish, distribute, sublicense, and/or sell copies of the Software,
+// and to permit persons to whom the Software is furnished to do so,
+// subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+var BaseLanguage = require('./common/BaseLanguage').BaseLanguage
+var BaseCompiler = require('./common/BaseLanguage').BaseCompiler
+var _            = require('../lib/gen')
+var runtime      = require('./runtime/core')
+
+
+function first(as){ return as[0] }
+function last(as){ return as[as.length - 1] }
+
+exports.name  = 'Functional Language'
+exports.state = function() {
+  return runtime
+}
+
+ometa Parser <: BaseLanguage {
+  value = keyword('true')  -> [#Lit, true]
+        | keyword('false') -> [#Lit, false]
+        | number
+        | string
+        | member
+        | bottom,
+
+  lambda = identifier:a ws "->" ws expr:b -> [#Lambda, a, b],
+  
+  expr = expr:a ws "where" ws listOf(#assign, ","):bs "end" -> [#LetIn, bs, a]
+       | matchExpr
+       | condExpr,
+
+  condExpr = orExpr:a ( ws "?" ws condExpr:b ws ":" ws condExpr:c -> [#If, a, b, c]
+                      | empty                                     -> a
+                      ),
+
+  orExpr = orExpr:a ws "||" ws andExpr:b -> [#Or, a, b]
+         | andExpr,
+
+  andExpr = andExpr:a ws "&&" ws eqExpr:b -> [#And, a, b]
+          | eqExpr,
+
+  eqExpr = eqExpr:a ws "===" ws relExpr:b -> [#Eq, a, b]
+         | eqExpr:a ws "!==" ws relExpr:b -> [#Neq, a, b]
+         | relExpr,
+
+  relExpr = relExpr:a ws "<" ws addExpr:b  -> [#Lt, a, b]
+          | relExpr:a ws "<=" ws addExpr:b -> [#Lte, a, b]
+          | relExpr:a ws ">" ws addExpr:b  -> [#Gt, a, b]
+          | relExpr:a ws ">=" ws addExpr:b -> [#Gte, a, b]
+          | addExpr,
+
+  addExpr = addExpr:a ws "+" ws mulExpr:b -> [#Add, a, b]
+          | addExpr:a ws "-" ws mulExpr:b -> [#Sub, a, b]
+          | mulExpr,
+
+  mulExpr = mulExpr:a ws "*" ws unExpr:b -> [#Mul, a, b]
+          | mulExpr:a ws "/" ws unExpr:b -> [#Div, a, b]
+          | mulExpr:a ws "%" ws unExpr:b -> [#Mod, a, b]
+          | unExpr,
+
+  unExpr = '!' ws unExpr:a -> [#Not, a]
+         | primExpr,
+
+  primExpr = primExpr:a ws '(' ws expr:b ws ')' -> [#App, a, b]
+           | primExprHd,
+
+  primExprHd = '(' ws expr:a ws ')' -> a
+             | lambda
+             | qualId
+             | value,
+
+  assign = identifier:a ws "=" ws expr:b -> [a, b],
+
+  matchExpr = "match" ws expr:a ws "with" ws '|' ws listOf(#matchCase, '|'):bs ws "end" -> [#Match, a, bs],
+
+  recMapId = identifier:a ws "=" ws identifier:b -> [a, b],
+
+  matchCase = qualId:a ws '(' ws listOf(#identifier, ','):b ws ')' ws "->" ws expr:c    -> [#DataPatt, a, b, c]
+            | '(' listOf(#identifier, ','):a ws ')' ws "->" ws expr:b                   -> [#ProdPatt, a, b]
+            | '{' listOf(#recMapId, ','):a ws '}' ws "->" ws expr:b                     -> [#RecPatt, a, b]
+            | value:a ws "->" ws expr:b                                                 -> [#ValPatt, a, b]
+            | identifier:a "->" ws expr:b                                               -> [#NamePatt, a, b],
+
+  qualId = identifier:a (ws '.' ws identifier)*:bs -> [#QualId, [a].concat(bs)],
+  member = identifier:a (ws '.' ws identifier)+:bs -> [#QualId, [a].concat(bs)],
+
+  dataDecl = "data" ws identifier:a ws "=" ws listOf(#dataCase, '|'):bs ws "end" -> [#Data, a, bs],
+  dataCase = identifier:a ws '(' ws listOf(#identifier, ','):bs ws ')'           -> [#Ctor, a, bs]
+           | identifier:a                                                        -> [#NCtor, a],
+
+  statement = letConstruct
+            | dataDecl
+            | expr:a -> [#StmtEx, a]
+}
+
+ometa Compiler <: BaseCompiler {
+  Let     cc:id cc:val     -> _.var(id, val),
+  LetIn   [ccAsn*:xs] cc:e -> _.call(_.fn( null, xs.map(first)
+                                         , _.block([_.return(e)]), {})
+                                    , xs.map(last)),
+  StmtEx  cc:a           -> _.expr(a),
+  If      cc:a cc:b cc:c -> _.cond(a, b, c),
+  And     cc:a cc:b      -> _.and(a, b),
+  Or      cc:a cc:b      -> _.or(a, b),
+  Not     cc:a           -> _.not(a),
+  Lit     :a             -> _.lit(a),
+  Id      :a             -> _.id(a),
+  App     cc:a cc:b      -> _.call(a, [b]),
+  Lambda  cc:a cc:b      -> _.lambda(a, b),
+  Mul     cc:a cc:b      -> _.call(_.call(_.id('$mul'), [a]), [b]),
+  Div     cc:a cc:b      -> _.call(_.call(_.id('$div'), [a]), [b]),
+  Mod     cc:a cc:b      -> _.call(_.call(_.id('$mod'), [a]), [b]),
+  Add     cc:a cc:b      -> _.call(_.call(_.id('$add'), [a]), [b]),
+  Sub     cc:a cc:b      -> _.call(_.call(_.id('$sub'), [a]), [b]),
+  Lt      cc:a cc:b      -> _.call(_.call(_.id('$lt'),  [a]), [b]),
+  Lte     cc:a cc:b      -> _.call(_.call(_.id('$lte'), [a]), [b]),
+  Gt      cc:a cc:b      -> _.call(_.call(_.id('$gt'),  [a]), [b]),
+  Gte     cc:a cc:b      -> _.call(_.call(_.id('$gte'), [a]), [b]),
+  Eq      cc:a cc:b      -> _.eq(a, b),
+  Neq     cc:a cc:b      -> _.neq(a, b),
+  QualId  [cc*:as]       -> _.qualId(as),
+  Ctor    cc:a [cc*:as]  -> [a, _.adtCase(as)],
+  NCtor   cc:a           -> [a, _.lit(null)],
+  Data    cc:a [cc*:as]  -> _.var(a, _.adt(as)),
+  Match   cc:a [cc*:bs]  -> _.match(freshName(), a, bs),
+
+  NamePatt cc:a cc:b          -> [#NamePatt, a, b],
+  ValPatt cc:a cc:b           -> [#ValPatt, a, b],
+  RecPatt                     -> [],
+  ProdPatt                    -> [],
+  DataPatt cc:a [cc*:bs] cc:e -> [#DataPatt, a, bs, e],
+
+  ccAsn = [cc:a cc:b] -> [a, b]
+}
+
+var names = 0;
+function freshName(){ return '$ref' + ++names }
