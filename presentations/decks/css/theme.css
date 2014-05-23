@@ -159,3 +159,17 @@ body {
   font-size: 1.4em;
   line-height: 1.6em
 }
+#presentation .cell-box {
+  padding: 1em;
+  border: 2px solid #ccc;
+  margin: 0.5em;
+}
+#presentation .cell-box, #presentation .cell-box i, #presentation .cell-box b {
+  display: inline-block;
+  height: 100%;
+  padding: 1em;
+}
+#presentation .cell-box b {
+  background: #ddd;
+  vertical-align: middle;
+}
