@@ -55,6 +55,7 @@ let print     = _ref.print
 let printLine = _ref.printLine
 let readLine  = _ref.readLine
 let runIO     = _ref.runIO
+let runIO_    = _ref.runIO_
 
 // Clean up
 ffi "_ref = undefined"

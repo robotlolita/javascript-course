@@ -4,7 +4,7 @@ module
   let future  = _future.future
 
   let rl  = _ -> ffi "$node_require('readline').createInterface({
-                        input: process.stdin, output: process.stdout
+                        input: $process.stdin, output: $process.stdout
                       })"
 
   export print = text -> future <| x ->
@@ -26,6 +26,6 @@ module
     failure = err -> raise(err)
   })
 
-  export runIO_ = io -> runIO(io, identity)
+  export runIO_ = io -> runIO(io, x -> x)
 
 end
