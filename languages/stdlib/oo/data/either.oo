@@ -21,6 +21,14 @@ module
   end
 
   // Extracts the value out of this structure.
+  // Throws an error if it doesn't contain a Right value.
+  // get :: Either<a, b> → b
+  method Either#get(self) = match self with
+    | Left(_)  => raise("Can't extract the value of a left.")
+    | Right(a) => a
+  end
+
+  // Extracts the value out of this structure.
   // getOrElse :: a → Either<a, a> → a
   method Either#getOrElse(self, b) = match self with
     | Left(_)  => b
