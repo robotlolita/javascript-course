@@ -165,4 +165,18 @@ exports.$List = adt.data({
         }
 })
 
+exports.Trampoline = adt.data({
+  Done: { result: adt.any },
+  More: { run: adt.only(Function) }
+})
+
+exports.trampoline = function(f) {
+  var step = f()
+  while (true) {
+    if (step instanceof Trampoline.Done)       return step.result
+    else if (step instanceof Trampoline.More)  step = step.run()
+    else                                       throw new Error('Not a valid trampoline value: ' + show(step))
+  }
+}
+
 exports.$console = console

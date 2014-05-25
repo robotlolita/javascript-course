@@ -68,13 +68,17 @@ ometa Parser <: BaseLanguage {
           | addExpr,
 
   addExpr = addExpr:a ws "+" ws mulExpr:b  -> [#Add, a, b]
-          | addExpr:a ws "++" ws mulExpr:b -> [#Concat, a, b]
           | addExpr:a ws "-" ws mulExpr:b  -> [#Sub, a, b]
           | mulExpr,
 
-  mulExpr = mulExpr:a ws "*" ws unExpr:b -> [#Mul, a, b]
-          | mulExpr:a ws "/" ws unExpr:b -> [#Div, a, b]
-          | mulExpr:a ws "%" ws unExpr:b -> [#Mod, a, b]
+  mulExpr = mulExpr:a ws "*" ws ctExpr:b -> [#Mul, a, b]
+          | mulExpr:a ws "/" ws ctExpr:b -> [#Div, a, b]
+          | mulExpr:a ws "%" ws ctExpr:b -> [#Mod, a, b]
+          | ctExpr,
+
+  ctExpr  = ctExpr:a ws ">>=" ws unExpr:b -> [#Meth, #Bind, a, b]
+          | ctExpr:a ws "<*>" ws unExpr:b -> [#Meth, #Ap, a, b]
+          | ctExpr:a ws "++" ws unExpr:b -> [#Meth, #Concat, a, b]
           | unExpr,
 
   unExpr = '!' ws unExpr:a -> [#Not, a]
@@ -134,7 +138,7 @@ ometa Compiler <: BaseCompiler {
   Div     cc:a cc:b      -> _.call(_.call(_.id('$div'), [a]), [b]),
   Mod     cc:a cc:b      -> _.call(_.call(_.id('$mod'), [a]), [b]),
   Add     cc:a cc:b      -> _.call(_.call(_.id('$add'), [a]), [b]),
-  Concat  cc:a cc:b      -> _.methodCall(a, 'concat', [b]),
+  Meth    cc:m  cc:a cc:b -> _.cmethodCall(a, _.lit(m.name), [b]),
   Sub     cc:a cc:b      -> _.call(_.call(_.id('$sub'), [a]), [b]),
   Lt      cc:a cc:b      -> _.call(_.call(_.id('$lt'),  [a]), [b]),
   Lte     cc:a cc:b      -> _.call(_.call(_.id('$lte'), [a]), [b]),

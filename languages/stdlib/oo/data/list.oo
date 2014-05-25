@@ -2,7 +2,7 @@ module
 
   let Maybe = require("std:data/maybe")
 
-  let List = ffi "$List"
+  export List = ffi "$List"
   let Nil  = List.Nil
   let Cons = List.Cons
 
@@ -43,21 +43,21 @@ module
 
   // Returns the first item of the list.
   // head :: List<a> → Maybe<a>
-  let first = xs -> match xs with
+  export first = xs -> match xs with
     | Nil        => Maybe.Nothing
     | Cons(a, _) => Maybe.Just(a)
   end
 
   // Returns the rest of the list.
   // rest :: List<a> → List<a>
-  let rest = xs -> match xs with
+  export rest = xs -> match xs with
     | Nil           => Nil
     | Cons(_, tail) => tail
   end
 
   // Filters items of a list.
   // filter :: (a → Boolean) → List<a> → List<a>
-  let filter = (f, xs) -> match xs with
+  export filter = (f, xs) -> match xs with
     | Nil         => Nil
     | Cons(x, ys) => f(x)?  Cons(x, filter(f, ys))
                          :  filter(f, ys)
@@ -65,7 +65,7 @@ module
 
   // Takes the last item of a list.
   // last :: List<a> → Maybe<a>
-  let last = xs -> match xs with
+  export last = xs -> match xs with
     | Nil         => Nothing
     | Cons(x, ys) => isEmpty(ys)?  Just(x)
                                 :  last(ys)
@@ -73,15 +73,9 @@ module
 
   // Checks if a list is empty.
   // isEmpty :: List<a> → Boolean
-  let isEmpty = xs -> xs === Nil
+  export isEmpty = xs -> xs === Nil
 
-  let at = (n, xs) -> match xs with
-    | Nil         => Nil
-    | Cons(x, ys) => n === 0?  x
-                            :  at(n - 1, ys)
-  end
-
-  let foldl = (f, b, xs) -> ffi "(function $recur(z, xs) {
+  export foldl = (f, b, xs) -> ffi "(function $recur(z, xs) {
     if (xs === Nil) return z
     if (xs instanceof Cons) {
       return $recur(f(z)(xs.head), xs.tail)
@@ -90,32 +84,39 @@ module
   })(b, xs)
   "
 
-  let foldr = (f, b, xs) -> match xs with
-    | Nil         => b
-    | Cons(x, ys) => f(x, foldr(f, b, ys))
-  end
+  export foldr = (f, b, xs) -> foldl((ys,y) -> f(y,ys), b, reverse(xs))
 
-  let reverse = foldl((xs, x) -> Cons(x, xs))(Nil)
+  export reverse = foldl((xs, x) -> Cons(x, xs))(Nil)
 
-  let length = foldl((n, _) -> n + 1)(0)
+  export length = foldl((n, _) -> n + 1)(0)
 
-  let any = (f, xs) -> match xs with
+  export any = (f, xs) -> match xs with
     | Nil         => true
     | Cons(x, ys) => f(x)?  true
                          :  any(ys)
   end
 
-  let all = (f, xs) -> match xs with
+  export all = (f, xs) -> match xs with
     | Nil         => false
     | Cons(x, ys) => f(x)?  all(ys)
                          :  false
   end
 
-  let sum = foldl((x, y) -> x + y)(0)
 
-  
+  export at = (n, xs) -> find((r, x) -> r._0 === 0? x
+                                                  : { r._0 - 1, Maybe.Just(x) })._1
+                         where
+                           find = f -> foldl(f, { n, Maybe.Nothing }, xs)
+                         end
 
-  export List, Nil, Cons, first, rest, filter, last, isEmpty, length, at
-       , reverse, foldl, foldr
+  export zipWith = (f, xs, ys) -> match xs with
+    | Nil           => Nil
+    | Cons(x1, xs1) => match ys with
+                         | Nil           => Nil
+                         | Cons(y1, ys1) => Cons(f(x1, y1), zipWith(f, xs1, ys1))
+                       end
+  end
+
+  export sum = foldl((x, y) -> x + y)(0)
 
 end
