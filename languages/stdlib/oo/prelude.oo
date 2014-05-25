@@ -1,0 +1,48 @@
+let List   = require("std:data/list")
+let Either = require("std:data/either")
+let Maybe  = require("std:data/maybe")
+
+// Core sum types
+data Ordering = LT | EQ | GT
+
+// Common functional operators
+let identity = x -> x
+let constant = x -> _ -> x
+let apply    = (f, x) -> f(x)
+let thread   = (x, f) -> f(x)
+let flip     = (f, a, b) -> f(b, a)
+let compose  = (f, g, a) -> f(g(a))
+
+
+// Tuple operations
+let first  = a -> a._0
+let second = a -> a._1
+
+
+// Record operations
+let get = (m, a) -> ffi "a[m]"
+
+
+// Operators as functions
+let add    = ffi "$add"
+let sub    = ffi "$sub"
+let mul    = ffi "$mul"
+let mod    = ffi "$mod"
+let lt     = ffi "$lt"
+let lte    = ffi "$lte"
+let gt     = ffi "gt"
+let gte    = ffi "gte"
+let eq     = ffi "eq"
+let neq    = ffi "neq"
+let and    = (a, b) -> a && b
+let or     = (a, b) -> a || b
+let not    = a -> !a
+
+
+// Category theory operators as functions
+let concat = (xs, ys) -> xs ++ ys
+let map    = (f, x) -> x#map(f)
+let empty  = a -> a#empty
+let ap     = (a, b) -> a <*> b
+let of     = (a, b) -> a#of(b)
+let chain  = (f, a) -> a >>= f
