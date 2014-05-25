@@ -1,0 +1,62 @@
+module
+
+  data Either = Left(a) | Right(a) end
+
+  // Constructs a new Right value containing `b`.
+  // of :: b → Either<a, b>
+  method Either#of(_, a) = Right(a)
+
+  // Applies the function in this Right value to another applicative's value.
+  // ap :: Either<a, b → c> → Applicative<b> → Applicative<c>
+  method Either#ap(self, b) = match self with
+    | Left(_)  => self
+    | Right(a) => b#map(a)
+  end
+
+  // Transforms the value inside this structure.
+  // chain :: (b → Either<c, d>) → Either<b> → Either<c, d>
+  method Either#chain(self, f) = match self with
+    | Left(_)  => self
+    | Right(a) => f(a)
+  end
+
+  // Extracts the value out of this structure.
+  // getOrElse :: a → Either<a, a> → a
+  method Either#getOrElse(self, b) = match self with
+    | Left(_)  => b
+    | Right(a) => a
+  end
+
+  // Extracts the value of whichiever side is defined
+  // merge :: Either<a, a> → a
+  method Either#merge(self) = match self with
+    | Left(a)  => a
+    | Right(a) => a
+  end
+
+  // Applies a function to each case in the structure
+  // fold :: Either<a, b> → (a → c) → (b → c) → c
+  method Either#fold(self, f, g) = match self with
+    | Left(a)  => f(a)
+    | Right(a) => g(a)
+  end
+
+  // Swaps the values of this structure
+  // swap :: Either<a, b> → Either<b, a>
+  method Either#swap(self) = match self with
+    | Left(a)  => Right(a)
+    | Right(a) => Left(a)
+  end
+
+  // Maps both sides of this structure
+  // bimap :: Either<a, b> → (a → c) → (b → d) → Either<c, d>
+  method Either#bimap(self, f, g) = match self with
+    | Left(a)  => Left(f(a))
+    | Right(a) => Right(g(a))
+  end
+
+  // Maps the left side of this structure
+  // leftMap :: Either<a, b> → (a → c) → Either<c, b>
+  method Either#leftMap(self, f) = self#bimap(f, x -> x)
+
+end
