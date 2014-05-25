@@ -8,10 +8,10 @@ module
                       })"
 
   export print = text -> future <| x ->
-    x.success(ffi "$process.stdout.write(text)")
+    x.success(ffi "$process.stdout.write(text), unit")
 
   export printLine = text -> future <| x ->
-    x.success(ffi "$console.log(text)")
+    x.success(ffi "$console.log(text), unit")
 
   export readLine = prompt -> future <| x ->
     ffi "(function(reader){

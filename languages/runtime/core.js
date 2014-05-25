@@ -189,9 +189,13 @@ exports.$extend = function(base, o) {
   return extendMut(Object.create(base), o)
 }
 
-exports.$run = function() {
-  if (typeof main !== 'undefined')  return runIO_(main)
-  else                              throw new Error('No entry point defined.')
+exports.$run = function(m) {
+  m = m || main
+  if (typeof m !== 'undefined')  return m.fork({
+                                   failure: exports.raise,
+                                   success: function(x){ return x }
+                                 })
+  else                           throw new Error('No entry point defined.')
 }
 
 exports.$concat = function(a, b) {
@@ -201,3 +205,12 @@ exports.$concat = function(a, b) {
 
 exports.$console = console
 exports.$process = process
+
+exports.unit  = undefined
+exports.error = function(a){ return new Error(a) }
+
+exports.$toList = function(xs) {
+  return xs.reduceRight(function(ys, x) {
+           return $List.Cons(x, ys)
+         }, $List.Nil)
+}

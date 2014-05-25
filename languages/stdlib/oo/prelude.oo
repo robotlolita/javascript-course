@@ -11,6 +11,9 @@ let future     = _future.future
 // Core sum types
 data Ordering = LT | EQ | GT end
 
+// Some lower level ffi stuff
+let show = x -> ffi "x.toString.length === 1? x.toString(x) : x.toString()"
+
 // Common functional operators
 let identity = x -> x
 let constant = x -> _ -> x
@@ -62,6 +65,39 @@ let printLine = _ref.printLine
 let readLine  = _ref.readLine
 let runIO     = _ref.runIO
 let runIO_    = _ref.runIO_
+
+
+// File system
+let _ref = require("std:io/fs")
+
+let readFile      = _ref.readFile
+let exists        = _ref.exists
+let writeFile     = _ref.writeFile
+let listDirectory = _ref.listDirectory
+let makeDirectory = _ref.makeDirectory
+let remove        = _ref.remove
+
+
+// HTTP
+let _ref = require("std:io/net")
+
+let request = _ref.request
+
+
+
+// Monad abstractions
+let _ref = require("std:control/monad")
+
+let sequence = _ref.sequence
+let mapM     = _ref.mapM
+let flatten  = _ref.flatten
+let liftM    = _ref.liftM
+let liftM2   = _ref.liftM2
+let liftM3   = _ref.liftM3
+
+
+
+
 
 // Clean up
 ffi "_ref = undefined"

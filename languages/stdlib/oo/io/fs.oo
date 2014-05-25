@@ -1,0 +1,47 @@
+module
+
+  let fs = ffi "$node_require('fs')"
+
+  export readFile = (name) -> future <| x ->
+    ffi "fs.readFile(name, 'utf-8', function(err, data) {
+           if (err) x.failure(err)
+           else     x.success(data)
+         })"
+
+  export exists = (path) -> future <| x ->
+    ffi "fs.exists(path, x.success)"
+
+  export writeFile = (name, contents) -> future <| x ->
+    ffi "fs.writeFile(name, contents, 'utf-8', function(err) {
+           if (err)  x.failure(err)
+           else      x.success(unit)
+         })"
+
+  export listDirectory = (name) -> future <| x ->
+    ffi "fs.readdir(name, function(err, data) {
+           if (err)  x.failure(err)
+           else      x.success($toList(data))
+         })"
+
+  export makeDirectory = (name, mode) -> future <| x ->
+    ffi "fs.mkdir(name, mode, function(err) {
+           if(err)  x.failure(err)
+           else     x.success(unit)
+         })"
+
+  export remove = (name) -> future <| x ->
+    ffi "fs.stat(name, function(stats) {
+           if(stats.isDirectory())
+             fs.rmdir(name, function(err) {
+               if(err)  x.failure(err)
+               else     x.success(unit)
+             })
+           else
+             fs.unlink(name, function(err) {
+               if(err)  x.failure(err)
+               else     x.success(unit)
+             })
+         })"
+  
+
+end

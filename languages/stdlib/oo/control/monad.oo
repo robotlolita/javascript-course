@@ -1,0 +1,30 @@
+module
+
+  let list = require("std:data/list")
+
+  export sequence = (m, ms) -> ms |> list.foldr(perform, m#of(list.List.Nil))
+  where 
+    perform = (mx, mresults) -> do x       <- mx
+                                   results <- mresults
+                                   return list.List.Cons(x, results)
+                                end
+  end
+
+  export mapM = (m, f, ms) -> sequence(m, list.map(f, ms))
+
+  export flatten = m -> m >>= x -> x
+
+  export liftM = (f, m) -> m#map(f)
+
+  export liftM2 = (f, m1, m2) -> do a <- m1
+                                    b <- m2
+                                    return f(a, b)
+                                 end
+
+  export liftM3 = (f, m1, m2, m3) -> do a <- m1
+                                        b <- m2
+                                        c <- m3
+                                        return f(a, b, c)
+                                     end
+
+end

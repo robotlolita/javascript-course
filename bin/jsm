@@ -121,11 +121,11 @@ void function main() {
                : /* otherwise */            null
 
   ; args.repl?            core.repl(language, language.state(), debug)
-  : args.run?             output(core.runProgram(source.code()
-                                                ,source.state()
-                                                ,source.filename
-                                                ,debug
-                                                ,source.language))
+  : args.run?             core.runProgram(source.code() + ";\n$run()"
+                                         ,source.state()
+                                         ,source.filename
+                                         ,debug
+                                         ,source.language)
   : args.languages?       show(listLanguages())
   : args.exercise?        exercises.run(args['<file>'], debug).otherwise(die)
   : args.help?            show(doc)

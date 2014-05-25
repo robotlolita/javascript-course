@@ -1,0 +1,16 @@
+module
+
+  let _request = ffi "$node_require('request')"
+
+  export request = (method, options, url) -> future <| x ->
+    ffi "_request[method](url, options, function(err, resp, body) {
+           if (err)  x.failure(err)
+           else      x.success({ response: resp, body: body })
+         })"
+
+  export get    = request("get")
+  export post   = request("post")
+  export remove = request("delete")
+  export put    = request("put")
+
+end

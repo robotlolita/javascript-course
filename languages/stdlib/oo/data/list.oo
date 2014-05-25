@@ -117,6 +117,29 @@ module
                        end
   end
 
+  export zip = zipWith((x, y) -> {x, y})
+
+  export replicate = (n, x) -> n === 0? Cons(x, Nil)
+                                      : Cons(x, replicate(n - 1, x))
+
   export sum = foldl((x, y) -> x + y)(0)
+
+  export take = (n, xs) -> match xs with
+    | Nil         => Nil
+    | Cons(x, ys) => n === 0? Nil
+                            : Cons(x, take(n - 1, ys))
+  end
+
+  export drop = (n, xs) -> match xs with
+    | Nil         => Nil
+    | Cons(x, ys) => n === 0? ys
+                            : drop(n - 1, ys)
+  end
+
+  export find = (f, xs) -> match xs with
+    | Nil         => Maybe.Nothing
+    | Cons(x, ys) => f(x)?  Maybe.Just(x)
+                         :  find(f, ys)
+  end
 
 end
