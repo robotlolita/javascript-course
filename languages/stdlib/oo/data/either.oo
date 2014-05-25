@@ -1,6 +1,8 @@
 module
 
-  data Either = Left(a) | Right(a) end
+  data Either = Left(a)
+              | Right(a)
+  end
 
   // Constructs a new Right value containing `b`.
   // of :: b → Either<a, b>

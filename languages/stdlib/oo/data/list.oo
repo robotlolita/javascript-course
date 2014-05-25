@@ -1,9 +1,11 @@
 module
 
-  let Maybe  = require("std:data/maybe")
+  let Maybe = require("std:data/maybe")
 
   
-  data List = Nil | Cons(head, tail) end
+  data List = Nil
+            | Cons(head, tail)
+  end
 
   // Returns the first item of the list.
   // head :: List<a> → Maybe<a>

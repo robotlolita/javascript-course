@@ -1,6 +1,8 @@
 module
 
-  data Maybe = Nothing | Just(a) end
+  data Maybe = Nothing
+             | Just(a)
+  end
 
   // Constructs a new value containing `a`.
   // of :: a → Maybe<a>
