@@ -3,7 +3,7 @@ let Either = require("std:data/either")
 let Maybe  = require("std:data/maybe")
 
 // Core sum types
-data Ordering = LT | EQ | GT
+data Ordering = LT | EQ | GT end
 
 // Common functional operators
 let identity = x -> x
@@ -46,3 +46,15 @@ let empty  = a -> a#empty
 let ap     = (a, b) -> a <*> b
 let of     = (a, b) -> a#of(b)
 let chain  = (f, a) -> a >>= f
+
+
+// Core IO routines
+let _ref = require("std:io/core")
+
+let print     = _ref.print
+let printLine = _ref.printLine
+let readLine  = _ref.readLine
+let runIO     = _ref.runIO
+
+// Clean up
+ffi "_ref = undefined"

@@ -22,11 +22,13 @@
 var path            = require('path')
 var vm              = require('vm')
 var extend          = require('xtend')
+var extendMut       = require('xtend/mutable')
 var jsm             = require('../../lib/core')
 var adt             = require('adt')
 var curry           = require('core.lambda').curry
 var show            = require('util').inspect
 var deepEqual       = require('deep-equal')
+var Future          = require('data.future')
 var internalClassOf = Function.call.bind({}.toString)
 
 function classOf(a) {
@@ -183,4 +185,15 @@ exports.trampoline = function(f) {
   }
 }
 
+exports.future = function(f){
+  return new Future(function(reject, resolve) {
+    return f(reject)(resolve)
+  })
+}
+
+exports.$extend = function(base, o) {
+  return extendMut(Object.create(base), o)
+}
+
 exports.$console = console
+exports.$process = process

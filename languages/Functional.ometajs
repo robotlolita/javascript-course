@@ -129,7 +129,7 @@ ometa Compiler <: BaseCompiler {
   If      cc:a cc:b cc:c -> _.cond(a, b, c),
   And     cc:a cc:b      -> _.and(a, b),
   Or      cc:a cc:b      -> _.or(a, b),
-  Not     cc:a           -> _.not(a),
+  Not     cc:a           -> _.unaryNot(a),
   Lit     :a             -> _.lit(a),
   Id      :a             -> _.id(a),
   App     cc:a cc:b      -> _.call(a, [b]),

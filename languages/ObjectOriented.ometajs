@@ -51,6 +51,7 @@ ometa Parser <: FunctionalParser {
                                
 
   expr = expr:a ws keyword('where') ws listOf(#assign, ","):bs ws keyword('end') -> [#LetIn, bs, a]
+       | expr:a ws keyword('extends') ws expr:b -> [#Extend, a, b]
        | fpipeExpr,
 
   fpipeExpr = fpipeExpr:a ws "|>" ws bpipeExpr:b -> [#App, b, a]
@@ -155,6 +156,7 @@ ometa Compiler <: FunctionalCompiler {
                                 return _.call(l, [a[1]])
                               }, b),
   DMap cc:b                -> b,
-  DChain cc:a cc:b         -> [a, b]
+  DChain cc:a cc:b         -> [a, b],
+  Extend cc:a cc:b         -> _.call(_.id('$extend'), [a, b])
 }
 
