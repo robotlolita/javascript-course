@@ -53,10 +53,14 @@ var languages = require('../lib/languages')
 var exercises = require('../lib/exercises')
 
 var keys = Object.keys
-var show = console.log.bind(console)
 var die  = process.exit.bind(process)
+var _log = console.log.bind(console)
 
 var root   = path.resolve('.')
+
+function show(a) {
+  if (a !== undefined)  _log(a)
+}
 
 function read(filename) {
   return fs.readFileSync(filename, 'utf-8')
