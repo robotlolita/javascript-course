@@ -29,8 +29,9 @@ var runtime            = require('./runtime/core')
 var freshName = FunctionalCompiler.freshName
 
 exports.name = 'Object Oriented'
-exports.state = function() {
+exports.state = function(file) {
   return extend(runtime, {
+    __filename: file,
     require: runtime.$require('.oo', path.join(__dirname, 'stdlib', 'oo'), '.')
   }) 
 }

@@ -122,7 +122,7 @@ void function main() {
 
   ; args.repl?            core.repl(language, language.state(), debug)
   : args.run?             core.runProgram(source.code() + ";\n$run(main)"
-                                         ,source.state()
+                                         ,source.state(source.filename)
                                          ,source.filename
                                          ,debug
                                          ,source.language)

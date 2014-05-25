@@ -76,6 +76,10 @@ let writeFile     = _ref.writeFile
 let listDirectory = _ref.listDirectory
 let makeDirectory = _ref.makeDirectory
 let remove        = _ref.remove
+let joinPath      = _ref.joinPath
+let dirname       = _ref.dirname
+let extname       = _ref.extname
+let basename      = _ref.basename
 
 
 // HTTP

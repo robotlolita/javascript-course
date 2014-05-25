@@ -1,6 +1,7 @@
 module
 
   let fs = ffi "$node_require('fs')"
+  let path = ffi "$node_require('path')"
 
   export readFile = filename -> future <| x ->
     ffi "fs.readFile(filename, 'utf-8', function(err, data) {
@@ -43,5 +44,11 @@ module
              })
          })"
   
+  export joinPath = (a, b) -> ffi "path.join(a, b)"
+  export dirname  = path.dirname
+  export extname  = path.extname
+  export basename = a -> ffi "path.basename(a, extname(a))"
+  export pathSeparator = path.sep
+  export pathDelimiter = path.delimiter
 
 end
