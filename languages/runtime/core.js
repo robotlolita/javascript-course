@@ -164,3 +164,5 @@ exports.$List = adt.data({
         , tail: exports.$List
         }
 })
+
+exports.$console = console

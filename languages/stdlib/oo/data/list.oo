@@ -55,6 +55,67 @@ module
     | Cons(_, tail) => tail
   end
 
-  export List, Nil, Cons, first, rest
+  // Filters items of a list.
+  // filter :: (a → Boolean) → List<a> → List<a>
+  let filter = (f, xs) -> match xs with
+    | Nil         => Nil
+    | Cons(x, ys) => f(x)?  Cons(x, filter(f, ys))
+                         :  filter(f, ys)
+  end
+
+  // Takes the last item of a list.
+  // last :: List<a> → Maybe<a>
+  let last = xs -> match xs with
+    | Nil         => Nothing
+    | Cons(x, ys) => isEmpty(ys)?  Just(x)
+                                :  last(ys)
+  end
+
+  // Checks if a list is empty.
+  // isEmpty :: List<a> → Boolean
+  let isEmpty = xs -> xs === Nil
+
+  let at = (n, xs) -> match xs with
+    | Nil         => Nil
+    | Cons(x, ys) => n === 0?  x
+                            :  at(n - 1, ys)
+  end
+
+  let foldl = (f, b, xs) -> ffi "(function $recur(z, xs) {
+    if (xs === Nil) return z
+    if (xs instanceof Cons) {
+      return $recur(f(z)(xs.head), xs.tail)
+    }
+    throw new Error('No cases matched the value ' + xs)
+  })(b, xs)
+  "
+
+  let foldr = (f, b, xs) -> match xs with
+    | Nil         => b
+    | Cons(x, ys) => f(x, foldr(f, b, ys))
+  end
+
+  let reverse = foldl((xs, x) -> Cons(x, xs))(Nil)
+
+  let length = foldl((n, _) -> n + 1)(0)
+
+  let any = (f, xs) -> match xs with
+    | Nil         => true
+    | Cons(x, ys) => f(x)?  true
+                         :  any(ys)
+  end
+
+  let all = (f, xs) -> match xs with
+    | Nil         => false
+    | Cons(x, ys) => f(x)?  all(ys)
+                         :  false
+  end
+
+  let sum = foldl((x, y) -> x + y)(0)
+
+  
+
+  export List, Nil, Cons, first, rest, filter, last, isEmpty, length, at
+       , reverse, foldl, foldr
 
 end

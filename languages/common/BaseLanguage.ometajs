@@ -59,7 +59,7 @@ ometa BaseLanguage {
 
   // Identifiers
   idStart    = letter | '_',
-  idRest     = letter | digit | '_',
+  idRest     = letter | digit | '_' | '\'',
   identifier = ws <idStart idRest*>:a ?(!isReserved(a)) -> [#Id, a],
 
   letterOrDigit = letter | '_' | digit,
