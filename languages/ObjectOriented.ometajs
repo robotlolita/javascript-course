@@ -157,6 +157,6 @@ ometa Compiler <: FunctionalCompiler {
                               }, b),
   DMap cc:b                -> b,
   DChain cc:a cc:b         -> [a, b],
-  Extend cc:a cc:b         -> _.call(_.id('$extend'), [a, b])
+  Extend cc:a cc:b         -> _.call(_.id('$extend'), [b, a])
 }
 
