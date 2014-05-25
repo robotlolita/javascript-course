@@ -185,12 +185,6 @@ exports.trampoline = function(f) {
   }
 }
 
-exports.future = function(f){
-  return new Future(function(reject, resolve) {
-    return f(reject)(resolve)
-  })
-}
-
 exports.$extend = function(base, o) {
   return extendMut(Object.create(base), o)
 }

@@ -1,0 +1,56 @@
+module
+
+  export
+  data Validation = Success(value)
+                  | Failure(reason)
+  end
+
+  method Validation#of(_, a) = Success(a)
+
+  method Validation#ap(self, other) = match self with
+    | Failure(e1) => match other with
+                       | Failure(e2) => Failure(e1 ++ e2)
+                       | Success(_)  => Failure(e1)
+                     end
+    | Success(v1) => match other with
+                       | Failure(e2) => Failure(e2)
+                       | Success(f)  => Success(f(v1))
+                     end
+  end
+
+  method Validation#map(self, f) = match self with
+    | Failure(e) => self
+    | Success(v) => Success(f(v))
+  end
+
+  method Validation#get(self) = match self with
+    | Failure(e) => raise("Can't extract the value of a Failure.")
+    | Success(v) => v
+  end
+
+  method Validation#getOrElse(self, b) = match self with
+    | Failure(_) => b
+    | Success(v) => v
+  end
+
+  method Validation#merge(self) = match self with
+    | Failure(e) => e
+    | Success(v) => v
+  end
+
+  method Validation#swap(self) = match self with
+    | Failure(e) => Success(e)
+    | Success(v) => Failure(v)
+  end
+
+  method Validation#bimap(self, f, g) = match self with
+    | Failure(e) => Failure(f(e))
+    | Success(v) => Success(g(v))
+  end
+
+  method Validation#failureMap(self, f) = match self with
+    | Failure(e) => Failure(f(e))
+    | Success(v) => Success(v)
+  end
+
+end
