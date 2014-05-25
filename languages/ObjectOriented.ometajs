@@ -18,7 +18,7 @@
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-var parse              = require('jsep')
+var parse              = require('esprima').parse
 var FunctionalCompiler = require('./Functional').Compiler
 var FunctionalParser   = require('./Functional').Parser
 var _                  = require('../lib/gen')
@@ -92,7 +92,7 @@ ometa Compiler <: FunctionalCompiler {
   ExportAll [cc*:as]       -> _.block(as.map(function(a) {
                                 return _.visible(a, a)
                               })),
-  FFI cc:a                 -> parse(a.value)
+  FFI cc:a                 -> parse(a.value).body[0].expression
 
 }
 

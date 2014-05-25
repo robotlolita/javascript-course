@@ -33,7 +33,6 @@
     "hifive": "^0.1.0",
     "hifive-spec": "^0.1.1",
     "hifive-tap": "^0.1.2",
-    "jsep": "^0.2.9",
     "ometajs": "^3.3.6",
     "sweet.js": "^0.5.0",
     "xtend": "^3.0.0"
