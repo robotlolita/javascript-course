@@ -1,0 +1,22 @@
+method
+
+  let Maybe  = require("std:data/maybe")
+
+  
+  data List = Nil | Cons(head, tail) end
+
+  // Returns the first item of the list.
+  // head :: List<a> → Maybe<a>
+  method List#first(self) = match self with
+    | Nil        => Maybe.Nothing
+    | Cons(a, _) => Maybe.Just(a)
+  end
+
+  // Returns the rest of the list.
+  // rest :: List<a> → List<a>
+  method List#rest(self) = match self with
+    | Nil         => Nil
+    | Cons(_, xs) => xs
+  end
+
+end
