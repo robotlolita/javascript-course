@@ -18,6 +18,7 @@
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+var parse              = require('jsep')
 var FunctionalCompiler = require('./Functional').Compiler
 var FunctionalParser   = require('./Functional').Parser
 var _                  = require('../lib/gen')
@@ -32,6 +33,11 @@ ometa Parser <: FunctionalParser {
   lambda = '(' ws listOf(#identifier, ','):as ws ')' ws "->" ws expr:b -> as.reduceRight(function(r, x) { return [#Lambda, x, r] }, b)
          | identifier:a ws "->" ws expr:b                              -> [#Lambda, a, b],
                                
+
+  expr = expr:a ws "where" ws listOf(#assign, ","):bs "end" -> [#LetIn, bs, a]
+       | keyword('ffi') ws string:a                         -> [#FFI, a]
+       | matchExpr
+       | condExpr,
 
   unExpr = '!' ws unExpr:a -> [#Not, a]
          | unExpr:a ws '.' ws identifier:b -> [#Member, a, b]
@@ -85,7 +91,8 @@ ometa Compiler <: FunctionalCompiler {
   Export cc:a cc:b         -> _.visible(a, b),
   ExportAll [cc*:as]       -> _.block(as.map(function(a) {
                                 return _.visible(a, a)
-                              }))
+                              })),
+  FFI cc:a                 -> parse(a.value)
 
 }
 

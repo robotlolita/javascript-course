@@ -20,6 +20,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 var adt             = require('adt')
+var curry           = require('core.lambda').curry
 var show            = require('util').inspect
 var deepEqual       = require('deep-equal')
 var internalClassOf = Function.call.bind({}.toString)
@@ -126,3 +127,5 @@ exports.$data = function() {
   return i
 }
 exports.$any  = adt.any
+
+exports.$curry = curry
