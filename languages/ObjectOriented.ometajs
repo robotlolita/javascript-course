@@ -19,6 +19,8 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 var parse              = require('esprima').parse
+var extend             = require('xtend')
+var path               = require('path')
 var FunctionalCompiler = require('./Functional').Compiler
 var FunctionalParser   = require('./Functional').Parser
 var _                  = require('../lib/gen')
@@ -26,7 +28,9 @@ var runtime            = require('./runtime/core')
 
 exports.name = 'Object Oriented'
 exports.state = function() {
-  return runtime
+  return extend(runtime, {
+    require: runtime.$require('.oo', path.join(__dirname, 'stdlib', 'oo'), '.')
+  }) 
 }
 
 ometa Parser <: FunctionalParser {
@@ -50,7 +54,7 @@ ometa Parser <: FunctionalParser {
                                }, [#App, [#Member, [#Id, ref], b], [#Id, ref]])]
                              , a]
              }(FunctionalCompiler.freshName()))
-           | primExpr:a ws '#' ws identifier:b                 -> [#App, a, b]
+           | primExpr:a ws '#' ws identifier:b                 -> [#App, [#Member, a, b], a]
            | primExpr:a ws '(' ws listOf(#expr, ','):bs ws ')' -> bs.reduce(function(x, b){ return [#App, x, b] }, a)
            | primExprHd,
 
@@ -88,9 +92,9 @@ ometa Compiler <: FunctionalCompiler {
   DefMeth cc:a cc:m cc:e   -> _.expr(_.call(_.id('$defMethod'), [a, _.lit(m.name), e])),
   Module [cc*:as] [cc*:bs] -> _.expr(_.exportMod(_.module(as, bs))),
   SModule [cc*:bs]         -> _.expr(_.exportMod(_.call(_.module([], bs), []))),
-  Export cc:a cc:b         -> _.visible(a, b),
+  Export cc:a cc:b         -> _.expr(_.visible(a, b)),
   ExportAll [cc*:as]       -> _.block(as.map(function(a) {
-                                return _.visible(a, a)
+                                return _.expr(_.visible(a, a))
                               })),
   FFI cc:a                 -> parse(a.value).body[0].expression
 

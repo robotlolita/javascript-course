@@ -19,6 +19,10 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+var path            = require('path')
+var vm              = require('vm')
+var extend          = require('xtend')
+var jsm             = require('../../lib/core')
 var adt             = require('adt')
 var curry           = require('core.lambda').curry
 var show            = require('util').inspect
@@ -126,6 +130,30 @@ exports.$data = function() {
   i.prototype.clone = function(self){ return Object.create(self) }
   return i
 }
+
+exports.raise = function(e) {
+  throw e
+}
+
 exports.$any  = adt.any
 
 exports.$curry = curry
+
+exports.$require = $require
+function $require(ext, std_path, rel_path) { return function(p) {
+  if (/^std:/.test(p))         p = path.resolve(std_path, p.slice(4))
+  else if (/^\.\//.test(p))    p = path.resolve(rel_path, p)
+  if (path.extname(p) === '')  p += ext
+
+  var file    = jsm.resolveFile(p, null)
+  var dirname = path.dirname(file.filename)
+  var module  = { exports: {} }
+  var context = extend( file.state()
+                      , { require: $require(ext, std_path, dirname)
+                        , module:  module
+                        , __dirname: path.dirname(file.filename) })
+
+  vm.runInNewContext(file.code(), vm.createContext(context), file.filename)
+
+  return module.exports
+}}

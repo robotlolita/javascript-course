@@ -25,6 +25,14 @@ module
   end
 
   // Extracts the value out of this structure.
+  // Throws an error if there is no value.
+  // get :: Maybe<a> → a
+  method Maybe#get(self) = match self with
+    | Nothing => raise("Can't extract the value of a Nothing.")
+    | Just(a) => a
+  end
+
+  // Extracts the value out of this structure.
   // getOrElse :: a → Maybe<a> → a
   method Maybe#getOrElse(self, b) = match self with
     | Nothing => b
