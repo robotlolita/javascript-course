@@ -120,13 +120,15 @@ void function main() {
   : args.run?             output(core.runProgram(source.code()
                                                 ,source.state()
                                                 ,source.filename
-                                                ,debug))
+                                                ,debug
+                                                ,source.language))
   : args.languages?       show(listLanguages())
   : args.exercise?        exercises.run(args['<file>'], debug).otherwise(die)
   : args.help?            show(doc)
   : args.version?         show('jsm version ' + pkg.version)
   : args['--ast']?        output(toJSON(source.ast()))
   : args['--json']?       output(toJSON(source.jsAst()))
-  : args.compile?         output(source.code())
+  : args.compile?         output( core.loadPrelude(source.language) + ';\n' 
+                                + source.code())
   :                       die(show(doc))
 }()

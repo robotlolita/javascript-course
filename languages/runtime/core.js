@@ -140,6 +140,8 @@ exports.$any  = adt.any
 
 exports.$curry = curry
 
+exports.$node_require = require
+
 exports.$require = $require
 function $require(ext, std_path, rel_path) { return function(p) {
   if (/^std:/.test(p))         p = path.resolve(std_path, p.slice(4))
