@@ -50,20 +50,39 @@ ometa Parser <: FunctionalParser {
              | qualId
              | value,
 
-  methodDecl = "method" ws qualId:a ws '#' ws identifier:m ws '=' ws expr:e -> [#DefMeth, a, m, e]
-             | "method" ws qualId:a ws '#' ws identifier:m ws '(' ws listOf(#identifier, ','):cs ws ')' ws '=' ws expr:e -> [#DefMeth, a, m, cs.reduceRight(function(r, x) {
-                                                                                                                                               return [#Lambda, x, r]
-                                                                                                                                             }, e)],
+  methodDecl = keyword('method') ws qualId:a ws '#' ws identifier:m ws '=' ws expr:e -> [#DefMeth, a, m, e]
+             | keyword('method') ws qualId:a ws '#' ws identifier:m ws '(' ws listOf(#identifier, ','):cs ws ')' ws '=' ws expr:e -> [#DefMeth, a, m, cs.reduceRight(function(r, x) {
+                                                                                                                                       return [#Lambda, x, r]
+                                                                                                                                     }, e)],
+
+  moduleDecl = keyword('module') (ws moduleStmt)*:as ws keyword('end')                                         -> [#SModule, as]
+             | keyword('module') ws '(' listOf(#identifier, ','):bs ')' (ws moduleStmt)*:as ws keyword('end')  -> [#Module, bs, as],
+
+  exportConstruct = keyword('export') ws identifier:a ws '=' ws expr:e           -> [#Export, a, e]
+                  | keyword('export') ws identifier:a (ws ',' ws identifier)*:bs -> [#ExportAll, [a].concat(bs)],
+
+  moduleStmt = exportConstruct
+             | statement,
 
   statement = letConstruct
             | methodDecl
             | dataDecl
-            | expr:a -> [#StmtEx, a]
+            | expr:a -> [#StmtEx, a],
 
+  
+  program = ws moduleDecl:a ws eof    -> [#Program, [a]]
+          | (ws statement)*:xs ws eof -> [#Program, xs],
 }
 
 ometa Compiler <: FunctionalCompiler {
-  DefMeth cc:a cc:m cc:e  -> _.expr(_.call(_.id('$defMethod'), [a, _.lit(m.name), e]))
+  DefMeth cc:a cc:m cc:e   -> _.expr(_.call(_.id('$defMethod'), [a, _.lit(m.name), e])),
+  Module [cc*:as] [cc*:bs] -> _.expr(_.exportMod(_.module(as, bs))),
+  SModule [cc*:bs]         -> _.expr(_.exportMod(_.call(_.module([], bs), []))),
+  Export cc:a cc:b         -> _.visible(a, b),
+  ExportAll [cc*:as]       -> _.block(as.map(function(a) {
+                                return _.visible(a, a)
+                              }))
+
 }
 
 

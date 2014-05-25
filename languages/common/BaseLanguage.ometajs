@@ -37,6 +37,8 @@ var reserved = [ 'where'
                , 'end'
                , 'data'
                , 'method'
+               , 'module'
+               , 'export'
                ]
 
 /**
