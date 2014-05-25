@@ -2,6 +2,7 @@ module
 
   let fs = ffi "$node_require('fs')"
   let path = ffi "$node_require('path')"
+  let future = require("std:data/future").future
 
   export readFile = filename -> future <| x ->
     ffi "fs.readFile(filename, 'utf-8', function(err, data) {
