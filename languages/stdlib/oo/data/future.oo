@@ -1,0 +1,38 @@
+module
+
+  export Future = { fork = _ -> ??? }
+
+  export future = computation -> { fork = computation }  extends Future
+
+  method Future#of(_, a) -> future <| x -> x.success(a)
+
+  method Future#map(self, f) -> self#chain(a -> self#of(f(a)))
+
+  method Future#chain(self, f) -> future <| x -> self.fork({
+    success = value -> f(value).fork(x)
+    failure = x.failure
+  })
+
+  method Future#orElse(self, f) -> future <| x -> self.fork({
+    success = x.success
+    failure = error -> f(error).fork(x)
+  })
+
+  method Future#swap(self) -> future <| x -> self.fork({
+    success = x.failure
+    failure = x.success
+  })
+
+  method Future#bimap(self, f, g) -> future <| x -> self.fork({
+    success = f ->> x.success
+    failure = g ->> x.failure
+  })
+
+  method Future#failureMap(self, f) -> future <| x -> self.fork({
+    success = x.success
+    failure = f ->> x.failure
+  })
+
+    
+
+end
