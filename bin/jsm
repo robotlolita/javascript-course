@@ -121,7 +121,7 @@ void function main() {
                : /* otherwise */            null
 
   ; args.repl?            core.repl(language, language.state(), debug)
-  : args.run?             core.runProgram(source.code() + ";\n$run()"
+  : args.run?             core.runProgram(source.code() + ";\n$run(main)"
                                          ,source.state()
                                          ,source.filename
                                          ,debug

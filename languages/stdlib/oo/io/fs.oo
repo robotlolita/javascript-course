@@ -2,42 +2,42 @@ module
 
   let fs = ffi "$node_require('fs')"
 
-  export readFile = (name) -> future <| x ->
-    ffi "fs.readFile(name, 'utf-8', function(err, data) {
+  export readFile = filename -> future <| x ->
+    ffi "fs.readFile(filename, 'utf-8', function(err, data) {
            if (err) x.failure(err)
            else     x.success(data)
          })"
 
-  export exists = (path) -> future <| x ->
+  export exists = path -> future <| x ->
     ffi "fs.exists(path, x.success)"
 
-  export writeFile = (name, contents) -> future <| x ->
-    ffi "fs.writeFile(name, contents, 'utf-8', function(err) {
+  export writeFile = (filename, contents) -> future <| x ->
+    ffi "fs.writeFile(filename, contents, 'utf-8', function(err) {
            if (err)  x.failure(err)
            else      x.success(unit)
          })"
 
-  export listDirectory = (name) -> future <| x ->
-    ffi "fs.readdir(name, function(err, data) {
+  export listDirectory = filename -> future <| x ->
+    ffi "fs.readdir(filename, function(err, data) {
            if (err)  x.failure(err)
            else      x.success($toList(data))
          })"
 
-  export makeDirectory = (name, mode) -> future <| x ->
-    ffi "fs.mkdir(name, mode, function(err) {
+  export makeDirectory = (filename, mode) -> future <| x ->
+    ffi "fs.mkdir(filename, mode, function(err) {
            if(err)  x.failure(err)
            else     x.success(unit)
          })"
 
-  export remove = (name) -> future <| x ->
-    ffi "fs.stat(name, function(stats) {
+  export remove = filename -> future <| x ->
+    ffi "fs.stat(filename, function(stats) {
            if(stats.isDirectory())
-             fs.rmdir(name, function(err) {
+             fs.rmdir(filename, function(err) {
                if(err)  x.failure(err)
                else     x.success(unit)
              })
            else
-             fs.unlink(name, function(err) {
+             fs.unlink(filename, function(err) {
                if(err)  x.failure(err)
                else     x.success(unit)
              })

@@ -190,12 +190,10 @@ exports.$extend = function(base, o) {
 }
 
 exports.$run = function(m) {
-  m = m || main
-  if (typeof m !== 'undefined')  return m.fork({
-                                   failure: exports.raise,
-                                   success: function(x){ return x }
-                                 })
-  else                           throw new Error('No entry point defined.')
+  m.fork({
+    failure: exports.raise,
+    success: function(x){ return x }
+  })
 }
 
 exports.$concat = function(a, b) {

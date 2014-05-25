@@ -2,8 +2,8 @@ module
 
   let _request = ffi "$node_require('request')"
 
-  export request = (method, options, url) -> future <| x ->
-    ffi "_request[method](url, options, function(err, resp, body) {
+  export request = (meth, options, url) -> future <| x ->
+    ffi "_request[meth](url, options, function(err, resp, body) {
            if (err)  x.failure(err)
            else      x.success({ response: resp, body: body })
          })"
