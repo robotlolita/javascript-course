@@ -47,7 +47,7 @@ ometa Parser <: FunctionalParser {
          | identifier:a ws "->" ws expr:b                              -> [#Lambda, a, b],
                                
 
-  expr = expr:a ws "where" ws listOf(#assign, ","):bs "end" -> [#LetIn, bs, a]
+  expr = expr:a ws keyword('where') ws listOf(#assign, ","):bs ws keyword('end') -> [#LetIn, bs, a]
        | fpipeExpr,
 
   fpipeExpr = fpipeExpr:a ws "|>" ws bpipeExpr:b -> [#App, a, b]
@@ -78,9 +78,15 @@ ometa Parser <: FunctionalParser {
 
 
   primExprHd = '(' ws expr:a ws ')' -> a
+             | doExpr
              | lambda
              | qualId
              | value,
+
+  doExpr  = keyword('do') (ws doChain)*:as ws doMap:b ws keyword('end') -> [#Do, as, b],
+  doChain = identifier:a ws "<-" ws expr:b -> [#DChain, a, b],
+  doMap   = keyword('return') ws expr:b    -> [#DMap, b],
+  
 
   methodDecl = keyword('method') ws qualId:a ws '#' ws identifier:m ws '=' ws expr:e -> [#DefMeth, a, m, e]
              | keyword('method') ws qualId:a ws '#' ws identifier:m ws '(' ws listOf(#identifier, ','):cs ws ')' ws '=' ws expr:e -> [#DefMeth, a, m, cs.reduceRight(function(r, x) {
@@ -119,8 +125,20 @@ ometa Compiler <: FunctionalCompiler {
   FFI cc:a                 -> parse(a.value).body[0].expression,
   Vector [cc*:as]          -> as.reduceRight(function(r, a) {
                                 return _.call(_.member(_.id('$List'), _.id('Cons')), [a, r])
-                              }, _.member(_.id('$List'), _.id('Nil')))
-
+                              }, _.member(_.id('$List'), _.id('Nil'))),
+  Do [cc*:as] cc:b         -> as.reduceRight(function(r, a, i) {
+                                var m = i === as.length - 1? 'map' : 'chain'
+                                var n = _.id(FunctionalCompiler.freshName())
+                                var l = _.fn(null, [n], _.block([
+                                          _.return(_.call(
+                                            _.methodCall(n, _.id(m), [n]),
+                                            [_.lambda(a[0], r)]
+                                          ))
+                                        ]), {})
+                                return _.call(l, [a[1]])
+                              }, b),
+  DMap cc:b                -> b,
+  DChain cc:a cc:b         -> [a, b]
 }
 
 

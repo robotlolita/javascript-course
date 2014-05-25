@@ -43,7 +43,7 @@ ometa Parser <: BaseLanguage {
 
   lambda = identifier:a ws "->" ws expr:b -> [#Lambda, a, b],
   
-  expr = expr:a ws "where" ws listOf(#assign, ","):bs "end" -> [#LetIn, bs, a]
+  expr = expr:a ws keyword('where') ws listOf(#assign, ","):bs keyword('end') -> [#LetIn, bs, a]
        | matchExpr
        | condExpr,
 
@@ -76,9 +76,9 @@ ometa Parser <: BaseLanguage {
           | mulExpr:a ws "%" ws ctExpr:b -> [#Mod, a, b]
           | ctExpr,
 
-  ctExpr  = ctExpr:a ws ">>=" ws unExpr:b -> [#Meth, #Bind, a, b]
-          | ctExpr:a ws "<*>" ws unExpr:b -> [#Meth, #Ap, a, b]
-          | ctExpr:a ws "++" ws unExpr:b -> [#Meth, #Concat, a, b]
+  ctExpr  = ctExpr:a ws ">>=" ws unExpr:b -> [#Meth, #chain, a, b]
+          | ctExpr:a ws "<*>" ws unExpr:b -> [#Meth, #ap, a, b]
+          | ctExpr:a ws "++" ws unExpr:b  -> [#Meth, #concat, a, b]
           | unExpr,
 
   unExpr = '!' ws unExpr:a -> [#Not, a]
@@ -95,7 +95,7 @@ ometa Parser <: BaseLanguage {
 
   assign = identifier:a ws "=" ws expr:b -> [a, b],
 
-  matchExpr = "match" ws expr:a ws "with" ws '|' ws listOf(#matchCase, '|'):bs ws "end" -> [#Match, a, bs],
+  matchExpr = keyword('match') ws expr:a ws keyword('with') ws '|' ws listOf(#matchCase, '|'):bs ws keyword('end') -> [#Match, a, bs],
 
   recMapId = identifier:a ws "=" ws identifier:b -> [a, b],
 
@@ -108,7 +108,7 @@ ometa Parser <: BaseLanguage {
 
   qualId = identifier:a (ws '.' ws identifier)*:bs -> [#QualId, [a].concat(bs)],
 
-  dataDecl = "data" ws identifier:a ws "=" ws listOf(#dataCase, '|'):bs ws "end" -> [#Data, a, bs],
+  dataDecl = keyword('data') ws identifier:a ws "=" ws listOf(#dataCase, '|'):bs ws keyword('end') -> [#Data, a, bs],
   dataCase = identifier:a ws '(' ws listOf(#identifier, ','):bs ws ')'           -> [#Ctor, a, bs]
            | identifier:a                                                        -> [#NCtor, a],
 
@@ -138,7 +138,12 @@ ometa Compiler <: BaseCompiler {
   Div     cc:a cc:b      -> _.call(_.call(_.id('$div'), [a]), [b]),
   Mod     cc:a cc:b      -> _.call(_.call(_.id('$mod'), [a]), [b]),
   Add     cc:a cc:b      -> _.call(_.call(_.id('$add'), [a]), [b]),
-  Meth    cc:m  cc:a cc:b -> _.cmethodCall(a, _.lit(m.name), [b]),
+  Meth    :m  cc:a cc:b  -> { var n = _.id(freshName())
+                              _.call(
+                                _.lambda(n, 
+                                         _.call(_.cmethodCall(n, _.lit(m), [n]), [b])),
+                                [a]) 
+                            },
   Sub     cc:a cc:b      -> _.call(_.call(_.id('$sub'), [a]), [b]),
   Lt      cc:a cc:b      -> _.call(_.call(_.id('$lt'),  [a]), [b]),
   Lte     cc:a cc:b      -> _.call(_.call(_.id('$lte'), [a]), [b]),

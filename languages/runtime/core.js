@@ -127,7 +127,8 @@ function $defMethod(a, b, e) {
 
 exports.$data = function() {
   var i = adt.data.apply(null, arguments)
-  i.prototype.clone = function(self){ return Object.create(self) }
+  i.prototype.clone    = function(self){ return Object.create(self) }
+  i.prototype.$hasRepr = true
   return i
 }
 
@@ -158,12 +159,13 @@ function $require(ext, std_path, rel_path) { return function(p) {
   return module.exports
 }}
 
-exports.$List = adt.data({
+var $List = exports.$List = adt.data({
   Nil: null,
   Cons: { head: adt.any
         , tail: exports.$List
         }
 })
+$List.prototype.$hasRepr = true
 
 exports.Trampoline = adt.data({
   Done: { result: adt.any },
