@@ -1,0 +1,5 @@
+let main = do
+  text <- readFile(joinPath(dirname(__filename), "quine.oo"))
+  _    <- printLine(text)
+  return unit
+end
