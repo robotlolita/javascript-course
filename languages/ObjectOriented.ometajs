@@ -26,6 +26,8 @@ var FunctionalParser   = require('./Functional').Parser
 var _                  = require('../lib/gen')
 var runtime            = require('./runtime/core')
 
+var freshName = FunctionalCompiler.freshName
+
 exports.name = 'Object Oriented'
 exports.state = function() {
   return extend(runtime, {
@@ -51,11 +53,25 @@ ometa Parser <: FunctionalParser {
   expr = expr:a ws keyword('where') ws listOf(#assign, ","):bs ws keyword('end') -> [#LetIn, bs, a]
        | fpipeExpr,
 
-  fpipeExpr = fpipeExpr:a ws "|>" ws bpipeExpr:b -> [#App, a, b]
+  fpipeExpr = fpipeExpr:a ws "|>" ws bpipeExpr:b -> [#App, b, a]
             | bpipeExpr,
 
-  bpipeExpr = bpipeExpr:a ws "<|" ws ffiExpr:b -> [#App, b, a]
+  bpipeExpr = bpipeExpr:a ws "<|" ws fcompExpr:b -> [#App, a, b]
+            | fcompExpr,
+
+  fcompExpr = fcompExpr:a ws "->>" ws bcompExpr:b -> {
+                var n = freshName();
+                [#Lambda, [#Id, n], [#App, b, [#App, a, [#Id, n]]]]
+              }
+            | bcompExpr,
+
+  bcompExpr = bcompExpr:a ws "<<-" ws ffiExpr:b -> {
+                var n = freshName();
+                [#Lambda, [#Id, n], [#App, a, [#App, b, [#Id, n]]]]
+              }
             | ffiExpr,
+
+  
 
   ffiExpr = keyword('ffi') ws string:a -> [#FFI, a]
           | matchExpr
@@ -67,12 +83,12 @@ ometa Parser <: FunctionalParser {
                                  return [#App, r, x] 
                                }, [#App, [#Member, [#Id, ref], b], [#Id, ref]])]
                              , a]
-             }(FunctionalCompiler.freshName()))
+             }(freshName()))
            | primExpr:a ws '#' ws identifier:b  -> (function(ref) {
                                                       return [#App, [#Lambda, [#Id, ref], 
                                                                      [#App, [#Member, [#Id, ref], b], [#Id, ref]]], 
                                                               a]
-                                                   }(FunctionalCompiler.freshName()))
+                                                   }(freshName()))
            | primExpr:a ws '.' ws identifier:b ws '(' ws listOf(#expr, ','):cs ws ')' -> cs.reduce(function(r,x){ return [#App, r, x] }, [#Member, a, b])
            | primExpr:a ws '(' ws listOf(#expr, ','):bs ws ')' -> bs.reduce(function(x, b){ return [#App, x, b] }, a)
            | primExprHd,
@@ -129,7 +145,7 @@ ometa Compiler <: FunctionalCompiler {
                               }, _.member(_.id('$List'), _.id('Nil'))),
   Do [cc*:as] cc:b         -> as.reduceRight(function(r, a, i) {
                                 var m = i === as.length - 1? 'map' : 'chain'
-                                var n = _.id(FunctionalCompiler.freshName())
+                                var n = _.id(freshName())
                                 var l = _.fn(null, [n], _.block([
                                           _.return(_.call(
                                             _.methodCall(n, _.id(m), [n]),
@@ -141,5 +157,4 @@ ometa Compiler <: FunctionalCompiler {
   DMap cc:b                -> b,
   DChain cc:a cc:b         -> [a, b]
 }
-
 
