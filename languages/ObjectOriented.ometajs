@@ -29,6 +29,10 @@ exports.state = function() {
 }
 
 ometa Parser <: FunctionalParser {
+  lambda = '(' ws listOf(#identifier, ','):as ws ')' ws "->" ws expr:b -> as.reduceRight(function(r, x) { return [#Lambda, x, r] }, b)
+         | identifier:a ws "->" ws expr:b                              -> [#Lambda, a, b],
+                               
+
   unExpr = '!' ws unExpr:a -> [#Not, a]
          | unExpr:a ws '.' ws identifier:b -> [#Member, a, b]
          | primExpr,
