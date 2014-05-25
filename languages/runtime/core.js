@@ -189,5 +189,15 @@ exports.$extend = function(base, o) {
   return extendMut(Object.create(base), o)
 }
 
+exports.$run = function() {
+  if (typeof main !== 'undefined')  return runIO_(main)
+  else                              throw new Error('No entry point defined.')
+}
+
+exports.$concat = function(a, b) {
+  return classOf(a) === 'String'?  a + b
+  :                                a.concat(a)(b)
+}
+
 exports.$console = console
 exports.$process = process

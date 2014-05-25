@@ -78,7 +78,7 @@ ometa Parser <: BaseLanguage {
 
   ctExpr  = ctExpr:a ws ">>=" ws unExpr:b -> [#Meth, #chain, a, b]
           | ctExpr:a ws "<*>" ws unExpr:b -> [#Meth, #ap, a, b]
-          | ctExpr:a ws "++" ws unExpr:b  -> [#Meth, #concat, a, b]
+          | ctExpr:a ws "++" ws unExpr:b  -> [#Concat, a, b]
           | unExpr,
 
   unExpr = '!' ws unExpr:a -> [#Not, a]
@@ -151,6 +151,7 @@ ometa Compiler <: BaseCompiler {
   Gte     cc:a cc:b      -> _.call(_.call(_.id('$gte'), [a]), [b]),
   Eq      cc:a cc:b      -> _.call(_.call(_.id('$eq'), [a]), [b]),
   Neq     cc:a cc:b      -> _.call(_.call(_.id('$neq'), [a]), [b]),
+  Concat  cc:a cc:b      -> _.call(_.id('$concat'), [a, b]),
   QualId  [cc*:as]       -> _.qualId(as),
   Member  cc:a cc:b      -> _.member(a, b, false),
   Ctor    cc:a [cc*:as]  -> [a, _.adtCase(as)],
