@@ -2,23 +2,59 @@ module
 
   let Maybe = require("std:data/maybe")
 
+  let List = ffi "$List"
+  let Nil  = List.Nil
+  let Cons = List.Cons
+
+  // ^-- the definition of the following sum type:
+  //
+  // data List = Nil
+  //           | Cons(head, tail)
+  // end
+  //
+  // ^--
+
+  // -- Semigroup
+  method List#concat(self, ys) = match self with
+    | Nil         => ys
+    | Cons(x, xs) => Cons(x, xs ++ ys)
+  end
   
-  data List = Nil
-            | Cons(head, tail)
+  // -- Monoid 
+  method List#empty(self) = Nil
+
+  // -- Functor
+  method List#map(self, f) = match self with
+    | Nil         => Nil
+    | Cons(x, xs) => Cons(f(x), xs#map(f))
+  end
+
+  // -- Apply
+  method List#ap(self, bs) = bs#map(b -> self#map(f -> f(b)))
+
+  // -- Applicative
+  method List#of(_, a) = Cons(a, Nil)
+
+  // -- Chain / Monad
+  method List#chain(self, f) = match self with
+    | Nil         => Nil
+    | Cons(x, xs) => f(x) ++ xs#chain(f)
   end
 
   // Returns the first item of the list.
   // head :: List<a> → Maybe<a>
-  method List#first(self) = match self with
+  let first = xs -> match xs with
     | Nil        => Maybe.Nothing
     | Cons(a, _) => Maybe.Just(a)
   end
 
   // Returns the rest of the list.
   // rest :: List<a> → List<a>
-  method List#rest(self) = match self with
-    | Nil         => Nil
-    | Cons(_, xs) => xs
+  let rest = xs -> match xs with
+    | Nil           => Nil
+    | Cons(_, tail) => tail
   end
+
+  export List, Nil, Cons, first, rest
 
 end

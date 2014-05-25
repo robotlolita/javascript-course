@@ -24,8 +24,8 @@ module
 
   // Extracts the value out of this structure.
   // Throws an error if it doesn't contain a Right value.
-  // get :: Either<a, b> → b
-  method Either#get(self) = match self with
+  // extract :: Either<a, b> → b
+  method Either#extract(self) = match self with
     | Left(_)  => raise("Can't extract the value of a left.")
     | Right(a) => a
   end

@@ -34,6 +34,15 @@ exports.state = function() {
 }
 
 ometa Parser <: FunctionalParser {
+  value = keyword('true')  -> [#Lit, true]
+        | keyword('false') -> [#Lit, false]
+        | number
+        | string
+        | tuple
+        | record
+        | vector
+        | bottom,
+
   lambda = '(' ws listOf(#identifier, ','):as ws ')' ws "->" ws expr:b -> as.reduceRight(function(r, x) { return [#Lambda, x, r] }, b)
          | identifier:a ws "->" ws expr:b                              -> [#Lambda, a, b],
                                
@@ -54,7 +63,12 @@ ometa Parser <: FunctionalParser {
                                }, [#App, [#Member, [#Id, ref], b], [#Id, ref]])]
                              , a]
              }(FunctionalCompiler.freshName()))
-           | primExpr:a ws '#' ws identifier:b                 -> [#App, [#Member, a, b], a]
+           | primExpr:a ws '#' ws identifier:b                 -> (function(ref) {
+                                                                    return [#App, [#Lambda, [#Id, ref], 
+                                                                                   [#App, [#Member, [#Id, ref], b], [#Id, ref]]], 
+                                                                            a]
+                                                                   }(FunctionalCompiler.freshName()))
+           | primExpr:a ws '.' ws identifier:b ws '(' ws listOf(#expr, ','):cs ws ')' -> cs.reduce(function(r,x){ return [#App, r, x] }, [#Member, a, b])
            | primExpr:a ws '(' ws listOf(#expr, ','):bs ws ')' -> bs.reduce(function(x, b){ return [#App, x, b] }, a)
            | primExprHd,
 
@@ -96,7 +110,10 @@ ometa Compiler <: FunctionalCompiler {
   ExportAll [cc*:as]       -> _.block(as.map(function(a) {
                                 return _.expr(_.visible(a, a))
                               })),
-  FFI cc:a                 -> parse(a.value).body[0].expression
+  FFI cc:a                 -> parse(a.value).body[0].expression,
+  Vector [cc*:as]          -> as.reduceRight(function(r, a) {
+                                return _.call(_.member(_.id('$List'), _.id('Cons')), [a, r])
+                              }, _.member(_.id('$List'), _.id('Nil')))
 
 }
 

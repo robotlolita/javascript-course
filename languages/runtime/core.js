@@ -157,3 +157,10 @@ function $require(ext, std_path, rel_path) { return function(p) {
 
   return module.exports
 }}
+
+exports.$List = adt.data({
+  Nil: null,
+  Cons: { head: adt.any
+        , tail: exports.$List
+        }
+})
