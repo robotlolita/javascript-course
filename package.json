@@ -35,6 +35,7 @@
     "hifive": "^0.1.0",
     "hifive-spec": "^0.1.1",
     "hifive-tap": "^0.1.2",
+    "html-entities": "^1.0.10",
     "ometajs": "^3.3.6",
     "request": "^2.36.0",
     "sweet.js": "^0.5.0",

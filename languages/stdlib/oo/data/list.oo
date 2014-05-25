@@ -66,8 +66,8 @@ module
   // Takes the last item of a list.
   // last :: List<a> → Maybe<a>
   export last = xs -> match xs with
-    | Nil         => Nothing
-    | Cons(x, ys) => isEmpty(ys)?  Just(x)
+    | Nil         => Maybe.Nothing
+    | Cons(x, ys) => isEmpty(ys)?  Maybe.Just(x)
                                 :  last(ys)
   end
 

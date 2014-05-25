@@ -1,0 +1,51 @@
+let server   = require("std:io/server")
+let entities = ffi "new ($node_require('html-entities').AllHtmlEntities)"
+let Future   = require("std:data/future").Future
+let foldl    = require("std:data/list").foldl
+
+let fromRoot = joinPath(dirname(__filename))
+
+// We don't want XSS injections, so we make them impossible to happen
+data HTML = Break
+          | Bold(a)
+          | Code(a)
+          | Text(a)
+          | Seq(as)
+end
+
+method HTML#render(self) = match self with
+  | Break   => "<br>"
+  | Bold(a) => "<strong>" ++ a#render ++ "</strong>"
+  | Code(a) => "<pre>" ++ a#render ++ "</pre>"
+  | Text(a) => entities.encode(a)
+  | Seq(xs) => xs |> foldl((r,x) -> r ++ x#render)("")
+end
+
+let renderHTML = a -> a#render
+
+
+// Then we define some routes
+let hello_routes = [
+  server.get("/")      <| req -> Future#of(server.send("Hello!"))
+, server.get("/:name") <| req -> Future#of(server.send("Hello, " ++ req.params.name))
+]
+
+
+// And some routes that read things from files
+let asset_routes = [
+  server.get("/example/:name") <| req -> do
+    contents <- readFile(fromRoot(req.params.name))
+    return server.send(renderHTML <| Seq([
+      Bold(Text("Contents of " ++ req.params.name ++ ":")),
+      Break,
+      Code(Text(contents))
+    ]))
+  end
+]
+
+// Finally, we run our two servers, and tell the user when the two are ready
+let main = sequence(Future, [
+  server.listen(8080, server.create(hello_routes))
+, server.listen(8081, server.create(asset_routes))
+]) >>= _ -> printLine("Servers running on localhost:8080 and localhost:8081")
+                 

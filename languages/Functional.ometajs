@@ -79,6 +79,7 @@ ometa Parser <: BaseLanguage {
   ctExpr  = ctExpr:a ws ">>=" ws unExpr:b -> [#Meth, #chain, a, b]
           | ctExpr:a ws "<*>" ws unExpr:b -> [#Meth, #ap, a, b]
           | ctExpr:a ws "++" ws unExpr:b  -> [#Concat, a, b]
+          | ctExpr:a ws "::" ws unExpr:b  -> [#Cons, a, b]
           | unExpr,
 
   unExpr = '!' ws unExpr:a -> [#Not, a]
@@ -113,7 +114,10 @@ ometa Parser <: BaseLanguage {
            | identifier:a                                                        -> [#NCtor, a],
 
   tuple  = '{' ws listOf(#expr, ','):as ws '}'                                    -> [#Tuple, as],
-  record = '{' ws listOf(#assign, ','):as ws '}'                                  -> [#Record, as],
+  record = '{' ws listOf(#assignRec, ','):as ws '}'                               -> [#Record, as],
+
+  assignRec = identifier:a ws "=" ws expr:b -> [a, b]
+            | string:a ws "=" ws expr:b     -> [a, b],
 
   statement = letConstruct
             | dataDecl
@@ -163,6 +167,7 @@ ometa Compiler <: BaseCompiler {
   Match   cc:a [cc*:bs]  -> _.match(freshName(), a, bs),
   Tuple   [cc*:as]       -> _.tuple(as),
   Record  [ccAsn*:as]    -> _.record(as),
+  Cons cc:a cc:b         -> _.call(_.member(_.id('$List'), _.id('Cons')), [a, b]),
 
   NamePatt cc:a cc:b          -> [#NamePatt, a, b],
   ValPatt cc:a cc:b           -> [#ValPatt, a, b],

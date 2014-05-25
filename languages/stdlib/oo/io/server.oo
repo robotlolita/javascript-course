@@ -1,64 +1,62 @@
 module
 
   let express = ffi "$node_require('express')"
+  let future  = require("std:data/future").future
+  let foldl   = require("std:data/list").foldl
 
   export
   data Response = Redirect(url)
                 | Send(status, headers, body)
   end
 
-  data Route = Route(method, url, handler)
+  data Routing  = Route(meth, url, handler)
   end
 
   // Common responses
   export redirect = Redirect
-  export sendJson = x -> Send(200, { Content_Type = "application/json" }, 
-                              JSON.stringify(x))
-  export send     = Send(200, { Content_Type = "text/html" })
-  export notFound = Send(404, { Content_Type = "text/html" })
-  export fail     = Send(500, { Content_Type = "text/html" })
-
-  // Creates and runs a server
-  export create = foldl(defineRoute, ffi "express()")
-  export listen = (server, port) -> future <| x ->
-    ffi "app.listen(port, function(error) {
-           if (error)  x.failure(error)
-           else        x.resolve(this.address())
-         })"
-   
+  export sendJson = x -> Send(200, { "Content-Type" = "application/json" }, JSON.stringify(x))
+  export send     = Send(200, { "Content-Type" = "text/html" })
+  export notFound = Send(404, { "Content-Type" = "text/html" })
+  export fail     = Send(500, { "Content-Type" = "text/html" })
 
 
   // Internal helpers
   let defineRoute = (app, route) -> match route with
-    | Route(method, url, handler) => handleReq(app, method, url, handler)
+    | Route(meth, url, handler) => handleReq(app, meth, url, handler)
   end
 
-  let handleReq = (app, method, url, handler) ->
-    ffi "app[method](url, function(req, res) {
+  let handleReq = (app, meth, url, handler) ->
+    ffi "app[meth](url, function(req, res) {
            handler(req).fork({
-             failure: handleError(req)(res)
-             success: send(req)(res)
+             failure: handleError(req)(res),
+             success: sendResponse(req)(res)
            })
          })"
 
   let handleError = (req, res, error) ->
-    ffi "if (error instanceof Response)  return send(req, res, error)
-         res.send(500, error)"
+    ffi "if (error instanceof Response)  sendResponse(req)(res)(error)
+         else                            res.send(500, error)"
 
-  let send = (req, res, data) -> match data with
+  let sendResponse = (req, res, what) -> match what with
     | Redirect(url)               => res.redirect(url)
     | Send(status, headers, body) => ffi "res.set(headers), res.send(status, body)"
   end
 
 
   // Routing
-  let method = Route.Route
-  export all    = method('all')
-  export get    = method('get')
-  export post   = method('post')
-  export put    = method('put')
-  export remove = method('delete')
+  let meth = Route
+  export all    = meth("all")
+  export get    = meth("get")
+  export post   = meth("post")
+  export put    = meth("put")
+  export remove = meth("delete")
     
-  
+  // Creates and runs a server
+  export create = foldl(defineRoute, ffi "express()")
+  export listen = (port, server) -> future <| x ->
+    ffi "server.listen(port, function(error) {
+           if (error)  x.failure(error)
+           else        x.success(this.address())
+         })"
 
 end
