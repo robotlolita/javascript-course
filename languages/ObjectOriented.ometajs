@@ -63,11 +63,11 @@ ometa Parser <: FunctionalParser {
                                }, [#App, [#Member, [#Id, ref], b], [#Id, ref]])]
                              , a]
              }(FunctionalCompiler.freshName()))
-           | primExpr:a ws '#' ws identifier:b                 -> (function(ref) {
-                                                                    return [#App, [#Lambda, [#Id, ref], 
-                                                                                   [#App, [#Member, [#Id, ref], b], [#Id, ref]]], 
-                                                                            a]
-                                                                   }(FunctionalCompiler.freshName()))
+           | primExpr:a ws '#' ws identifier:b  -> (function(ref) {
+                                                      return [#App, [#Lambda, [#Id, ref], 
+                                                                     [#App, [#Member, [#Id, ref], b], [#Id, ref]]], 
+                                                              a]
+                                                   }(FunctionalCompiler.freshName()))
            | primExpr:a ws '.' ws identifier:b ws '(' ws listOf(#expr, ','):cs ws ')' -> cs.reduce(function(r,x){ return [#App, r, x] }, [#Member, a, b])
            | primExpr:a ws '(' ws listOf(#expr, ','):bs ws ')' -> bs.reduce(function(x, b){ return [#App, x, b] }, a)
            | primExprHd,
