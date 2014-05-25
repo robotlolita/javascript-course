@@ -1,0 +1,37 @@
+module
+
+  data Maybe = Nothing | Just(a) end
+
+  // Constructs a new value containing `a`.
+  // of :: a → Maybe<a>
+  method Maybe#of(_, a) = Just(a)
+
+  // Applies the function in this value to another applicative's value.
+  // ap :: Maybe<a → b> → Applicative<a> → Applicative<b>
+  method Maybe#ap(self, b) = match self with
+    | Nothing => Nothing
+    | Just(a) => b#map(a)
+  end
+
+  // Transforms the value inside this structure.
+  // map :: (a → b) → Maybe<a> → Maybe<b>
+  method Maybe#map(self, f) = self#chain(x -> Just(f(x)))
+
+  // Transforms the value inside this structure.
+  // chain :: (a → Maybe<b>) → Maybe<a> → Maybe<b>
+  method Maybe#chain(self, f) = match self with
+    | Nothing => Nothing
+    | Just(a) => f(a)
+  end
+
+  // Extracts the value out of this structure.
+  // getOrElse :: a → Maybe<a> → a
+  method Maybe#getOrElse(self, b) = match self with
+    | Nothing => b
+    | Just(a) => a
+  end
+
+  // -------------------------------------------------------------------
+  export Nothing, Just
+
+end
