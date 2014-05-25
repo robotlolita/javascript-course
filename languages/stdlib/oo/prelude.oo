@@ -1,6 +1,12 @@
-let List   = require("std:data/list")
-let Either = require("std:data/either")
-let Maybe  = require("std:data/maybe")
+let list       = require("std:data/list")
+let List       = list.List
+let Either     = require("std:data/either").Either
+let Maybe      = require("std:data/maybe").Maybe
+let Validation = require("std:data/validation").Validation
+let _future    = require("std:data/future")
+let Future     = _future.Future
+let future     = _future.future
+
 
 // Core sum types
 data Ordering = LT | EQ | GT end
