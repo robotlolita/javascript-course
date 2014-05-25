@@ -1,0 +1,69 @@
+// Copyright (c) 2014 Quildreen Motta <quildreen@gmail.com>
+//
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation files
+// (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge,
+// publish, distribute, sublicense, and/or sell copies of the Software,
+// and to permit persons to whom the Software is furnished to do so,
+// subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+var FunctionalCompiler = require('./Functional').Compiler
+var FunctionalParser   = require('./Functional').Parser
+var _                  = require('../lib/gen')
+var runtime            = require('./runtime/core')
+
+exports.name = 'Object Oriented'
+exports.state = function() {
+  return runtime
+}
+
+ometa Parser <: FunctionalParser {
+  unExpr = '!' ws unExpr:a -> [#Not, a]
+         | unExpr:a ws '.' ws identifier:b -> [#Member, a, b]
+         | primExpr,
+
+  primExpr = primExpr:a ws '#' ws identifier:b ws '(' ws listOf(#expr, ','):cs ws ')' -> (function(ref) {
+               return [#App, [#Lambda, [#Id, ref], 
+                               cs.reduce(function(r, x) { 
+                                 return [#App, r, x] 
+                               }, [#App, [#Member, [#Id, ref], b], [#Id, ref]])]
+                             , a]
+             }(FunctionalCompiler.freshName()))
+           | primExpr:a ws '#' ws identifier:b                 -> [#App, a, b]
+           | primExpr:a ws '(' ws listOf(#expr, ','):bs ws ')' -> bs.reduce(function(x, b){ return [#App, x, b] }, a)
+           | primExprHd,
+
+
+  primExprHd = '(' ws expr:a ws ')' -> a
+             | lambda
+             | qualId
+             | value,
+
+  methodDecl = "method" ws qualId:a ws '#' ws identifier:m ws '=' ws expr:e -> [#DefMeth, a, m, e]
+             | "method" ws qualId:a ws '#' ws identifier:m ws '(' ws listOf(#identifier, ','):cs ws ')' ws '=' ws expr:e -> [#DefMeth, a, m, cs.reduceRight(function(r, x) {
+                                                                                                                                               return [#Lambda, x, r]
+                                                                                                                                             }, e)],
+
+  statement = letConstruct
+            | methodDecl
+            | dataDecl
+            | expr:a -> [#StmtEx, a]
+
+}
+
+ometa Compiler <: FunctionalCompiler {
+  DefMeth cc:a cc:m cc:e  -> _.expr(_.call(_.id('$defMethod'), [a, _.lit(m.name), e]))
+}
+
+

@@ -162,3 +162,4 @@ ometa Compiler <: BaseCompiler {
 
 var names = 0;
 function freshName(){ return '$ref' + ++names }
+Compiler.freshName = freshName

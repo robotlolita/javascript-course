@@ -108,10 +108,21 @@ function $gte(a){ return function(b) {
   return a >= b
 }}
 
-exports.$matchesInterface = matchesInterface
-function matchesInterface(a, bs) {
+exports.$matchesInterface = $matchesInterface
+function $matchesInterface(a, bs) {
   return deepEqual(Object.keys(Object(a)).sort(), bs)
 }
 
-exports.$data = adt.data
+exports.$defMethod = $defMethod
+function $defMethod(a, b, e) {
+  if (typeof a === 'function')  a.prototype[b] = e
+  else                          a[b] = e
+}
+
+
+exports.$data = function() {
+  var i = adt.data.apply(null, arguments)
+  i.prototype.clone = function(self){ return Object.create(self) }
+  return i
+}
 exports.$any  = adt.any

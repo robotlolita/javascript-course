@@ -36,6 +36,7 @@ var reserved = [ 'where'
                , 'with'
                , 'end'
                , 'data'
+               , 'method'
                ]
 
 /**
