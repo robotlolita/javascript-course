@@ -1,0 +1,1 @@
+let main = printLine("Hello, world")
