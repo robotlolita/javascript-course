@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Orientação a Objetos e Polimorfismo</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="reveal.js/css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+      }
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="reveal.js/lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div style="display: none">
+$
+  \(\require{color}\)
+  \definecolor{blue}{RGB}{119,158,203}
+  \definecolor{green}{RGB}{3,192,60}
+  \definecolor{red}{RGB}{255,105,97}
+  \newcommand{\concat}{+\!\!\!\!+\,}
+$
+    </div>
+
+    <div id="presentation" class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        <section>
+          <h2>Orientação a Objetos<br>&<br>Polimorfismos</h2>
+          <h4 class="fading regular">(Sobre formas de generalização e modularização)</h4>
+        </section>
+        <section>
+          <h3>Já vimos polimorfismo paramétrico</h3>
+          <h4 class="fading regular">Aonde funções funcionam <br>em todos os objetos com uma estrutura específica</h4>
+        </section>
+        <section>
+          <h3>Mas existem outras formas interessantes:</h3>
+          <ul>
+            <li>Polimorfismo ad hoc
+            <li>Polimorfismo de subtipagem
+            <li>Polimorfismo de linha
+            <li class="fragment grow" data-fragment-index="0">Polimorfismo estrutural
+              <span class="fragment" data-fragment-index="0">&nbsp; (O que estamos interessados)</span>
+            <li>...
+          </ul>
+        </section>
+        <section>
+          <h3>Polimorfismo estrutural, aka Duck Typing</h3>
+          <h4 class="fading regular">A definição de uma computação com base apenas na estrutura dos valores</h4>
+        </section>
+        <section>
+          <h4 class="fading regular">Esse conceito é fundamental para</h4>
+          <h2>Orientação a Objetos</h2>
+          <br>
+          <h4 class="fading regular"><strong>Objeto:</strong> uma entidade definida inteiramente pelo seu comportamento</h4>
+          <h4 class="fading regular"><strong>Orientação a Objeto:</strong> um modelo de computação em cima de objetos</h4>
+        </section>
+        <section>
+          <h4 class="fading regular">Em outras palavras</h4>
+          <h3>Um objeto é aquilo que ele faz</h3>
+          <br>
+          <div style="width: 200px; height: 200px; position: relative; display: inline-block">
+            <div style="position: absolute; width: 100%; height: 100%; box-sizing: border-box; background: #999; border: 5px solid #555; border-right-color: #832; opacity: 0.3; transition: all 0.2s ease-out" id="actionable-box"></div>
+            <ul style="position: absolute; left: 200px; top: 0px;" class="action-list">
+              <li><a href="#forward">Anda</a>
+              <li><a href="#right">Direita</a>
+              <li><a href="#left">Esquerda</a>
+              <li><a href="#backward">Volta</a>
+            </ul>
+            <script>
+void function() {
+  var $box     = $('#actionable-box')
+  var $actions = $('.action-list a')
+
+  $actions.on('click', function(ev) {
+    ev.preventDefault()
+    var action = $(this).attr('href')
+    boxService[action]()
+    boxService.render()
+  })
+
+  function rad(x) { return x * Math.PI/180 }
+
+  boxService = { x: 0, y: 0, dir: 270
+  , '#forward': function(){ this.move(30) }
+  , '#backward': function(){ this.move(-30) }
+  , '#left': function(){ this.dir -= 15 }
+  , '#right': function(){ this.dir += 15 }
+
+  , move: function(x){ this.x += x * Math.cos(rad(this.dir)); this.y += x * Math.sin(rad(this.dir)) }
+  , render: function(){ $box.css({ transform: 'translate(' + ~~this.x + 'px, ' + ~~this.y + 'px) rotate(' + this.dir + 'deg)' }) }
+  }
+
+  boxService.render()  
+}()
+            </script>
+          </div>
+        </section>
+        <section>
+          <h3>Em código</h3>
+          <br>
+          <pre><code class="haskell">
+let caixa = (acao) -> match acao with
+  | "Anda"     => ...
+  | "Direita"  => ...
+  | "Esquerda" => ...
+  | "Volta"    => ...
+end
+          </code></pre>
+        </section>
+        <section>
+          <h3>Extendendo objetos, em código</h3>
+          <br>
+          <pre><code class="haskell">
+let outroObjeto = (acao) -> match acao with ... end
+
+let caixa = (acao) -> match acao with
+  | "Anda"      => ...
+  | "Direita"   => ...
+  | "Esquerda"  => ...
+  | "Volta"     => ...
+  | nao_entendi => outroObjeto(nao_entendi)
+end
+          </code></pre>
+        </section>
+        <section>
+          <h3>Existem diversos modelos de OO:</h3>
+          <br>
+          <ul>
+            <li>Baseado em classes
+            <li>Baseado em funções genéricas
+            <li class="fragment grow">Baseado em protótipos
+            <li>Baseado em álgebra de objetos
+            <li>...
+          </ul>
+        </section>
+        <section>
+          <h3>OO prototípico<h3>
+          <br>
+          <pre><code class="javascript smaller">
+let ponto2d = { x = 0, y = 1 }
+
+method ponto2d#show(self) = 
+  "(" ++ self.x ++ ", " ++ self.y ")"
+
+ponto2d.show(ponto2d)  // (0, 1)
+
+let outroPonto = { x = 10, y = 15 } extends ponto2d
+
+outroPonto#show // (10, 15)  — shorter version
+          </pre></code>
+        </section>
+
+        <section>
+          <h3>Em JavaScript<h3>
+          <br>
+          <pre><code class="javascript smaller">var ponto2d = { x: 0, y: 1 }
+
+ponto2d.show = function(){ 
+  return "(" + this.x + ", " + this.y + ")" 
+}
+
+ponto2d.show.call(ponto2d) // (0, 1)
+
+var outroPonto = Object.create(ponto2d)
+outroPonto.x = 10; outroPonto.y = 15
+
+outroPonto.show()  // (10, 15)  — shorter version</pre></code>
+        </section>
+        
+
+        <section>
+          <h4 class="fading regular">Wrapping up!</h4>
+          <br><br><br><br>
+          <h1>Questions?</h1>
+          <br><br><br>
+          <p class="footnote">
+            Quildreen Motta, <br>
+            <a href="http://github.com/robotlolita">@robotlolita</a>
+          </p>
+        </section>
+      </div>
+    </div>
+
+    <script src="reveal.js/lib/js/head.min.js"></script>
+    <script src="reveal.js/js/reveal.min.js"></script>
+
+    <script>
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'linear',
+        backgroundTransition: 'slide',
+
+        math: {
+          mathjax: 'http://cdn.mathjax.org/mathjax/latest/MathJax.js',
+          config: 'TeX-MML-AM_HTMLorMML'
+        },
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() {return !!document.body.classList; } },
+          { src: 'reveal.js/plugin/math/math.js', async: true }
+        ]
+      });
+    </script>
+
+    <!-- controldeck.js -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/controldeck-slides.js"></script>
+
+  </body>
+</html>
